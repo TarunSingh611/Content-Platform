@@ -12,7 +12,7 @@ export default async function ContentDetailPage({ params }: PageProps) {
   const session = await getServerAuthSession();  
 
   if (!session) {  
-    redirect('/auth/login');  
+    redirect('/auth');  
   }  
 
   // Await the params to resolve the promise  

@@ -88,7 +88,7 @@ export default function SignupForm() {
         throw new Error(data.error || 'Something went wrong');  
       }  
   
-      router.push('/login');  
+      router.push('/auth');  
     } catch (error) {  
       setErrors(prev => ({  
         ...prev,  

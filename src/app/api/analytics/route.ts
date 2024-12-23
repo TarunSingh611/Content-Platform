@@ -10,7 +10,7 @@ export async function GET() {
     const session = await getServerAuthSession();
 
     if (!session) {
-      redirect('/auth/login');
+      redirect('/auth');
     }
 
     if (!session) {  

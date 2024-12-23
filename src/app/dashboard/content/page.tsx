@@ -8,7 +8,7 @@ export default async function ContentPage() {
     const session = await getServerAuthSession();
 
     if (!session) {
-      redirect('/auth/login');
+      redirect('/auth');
     }
   const contents = await prisma.content.findMany({  
     where: {  
