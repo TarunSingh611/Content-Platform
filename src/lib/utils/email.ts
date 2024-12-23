@@ -255,8 +255,55 @@ async function verifyEmailConfig() {
 // Verify email configuration when the application starts
 verifyEmailConfig().catch(console.error);
 
+const getVerificationEmailTemplate = (verificationLink: string, userName: string = 'there') => {
+    const content = `
+          <div class="email-header">
+              <img src="${process.env.NEXT_PUBLIC_BASE_URL}/AILogo.jpeg" alt="socialSAGA Logo">
+              <h1 style="color: #ffffff; margin: 10px 0;">Verify Your Email</h1>
+          </div>
+          <div class="email-content">
+              <h2 style="color: #1F2937; margin-bottom: 20px;">Hi ${userName}!</h2>
+              <p style="color: #4B5563; margin-bottom: 20px;">
+                  Thanks for signing up for socialSAGA! Please verify your email address to get started.
+              </p>
+              <div style="text-align: center;">
+                  <a href="${verificationLink}" class="button">Verify Email Address</a>
+              </div>
+              <p style="color: #4B5563; margin-top: 20px;">
+                  This link will expire in 24 hours for security reasons.
+              </p>
+              <div style="margin: 30px 0; padding: 20px; background-color: #F3F4F6; border-radius: 6px;">
+                  <p style="color: #4B5563; font-size: 0.875rem; margin: 0;">
+                      If the button doesn't work, copy and paste this link into your browser:
+                      <br>
+                      <a href="${verificationLink}" style="color: #4F46E5; word-break: break-all;">${verificationLink}</a>
+                  </p>
+              </div>
+          </div>
+          <div class="footer">
+              <p>© ${new Date().getFullYear()} socialSAGA. All rights reserved.</p>
+          </div>
+      `;
+    return getBaseTemplate(content);
+  };
+  
+  export async function sendVerificationEmail(to: string, verificationToken: string, userName?: string) {
+    const verificationLink = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/verify-email?token=${verificationToken}`;
+    const html = getVerificationEmailTemplate(verificationLink, userName);
+    const text = `Verify your email by clicking this link: ${verificationLink}`;
+  
+    return sendEmail({
+      to,
+      subject: 'Verify Your socialSAGA Email',
+      text,
+      html,
+    });
+  }
+
+
 export default {
   sendEmail,
   sendPasswordResetEmail,
   sendWelcomeEmail,
 };
+

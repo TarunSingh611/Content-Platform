@@ -45,3 +45,46 @@ export async function verifyPasswordResetToken(token: string): Promise<string | 
 
   return resetToken.userId;
 }
+
+export async function generateEmailVerificationToken(email: string): Promise<string> {
+  const token = randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+  await prisma.verificationToken.create({
+    data: {
+      identifier: email,
+      token,
+      expires,
+    },
+  });
+
+  return token;
+}
+
+export async function verifyEmailToken(token: string): Promise<string | null> {
+  const verificationToken = await prisma.verificationToken.findFirst({
+    where: {
+      token,
+      expires: {
+        gt: new Date(),
+      },
+    },
+  });
+
+  if (!verificationToken) {
+    return null;
+  }
+
+  // Update user's email verification status
+  await prisma.user.update({
+    where: { email: verificationToken.identifier },
+    data: { emailVerified: new Date() },
+  });
+
+  // Delete the used token
+  await prisma.verificationToken.delete({
+    where: { id: verificationToken.id },
+  });
+
+  return verificationToken.identifier;
+}

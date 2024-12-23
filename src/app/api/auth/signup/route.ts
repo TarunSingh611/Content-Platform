@@ -2,6 +2,8 @@
 import { NextResponse } from 'next/server';    
 import { hash } from 'bcrypt';    
 import { prisma } from '@/lib/utils/db';  // Update this import path based on your project structure  
+import { generateEmailVerificationToken } from '@/lib/auth-utils';
+import { sendVerificationEmail } from '@/lib/utils/email';
 
 export async function POST(req: Request) {    
   try {    
@@ -50,9 +52,14 @@ export async function POST(req: Request) {
         email,    
         name,    
         password: hashedPassword,  
-        role: 'USER',    
+        role: 'USER',  
+        emailVerified: null,  
       },  
     });    
+
+    // Generate and send verification email
+    const verificationToken = await generateEmailVerificationToken(user.email);
+    await sendVerificationEmail(user.email, verificationToken, user.name || 'there');
 
     // Return safe user object  
     const safeUser = {    
@@ -65,11 +72,11 @@ export async function POST(req: Request) {
 
     return NextResponse.json(    
       {    
-        message: 'User created successfully',    
+        message: 'User created successfully. Please check your email to verify your account.',    
         user: safeUser,  
       },    
       { status: 201 }    
-    );    
+    );   
   } catch (error: any) {    
     console.error('Registration error:', error);  
 
