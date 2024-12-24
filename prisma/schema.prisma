@@ -31,22 +31,29 @@ model User {
   role          Role      @default(USER)    
   accounts      Account[]    
   sessions      Session[]    
-  emailVerified  DateTime?
+  emailVerified DateTime?
   passwordResetTokens PasswordResetToken[]
   teamMembers   TeamMember[] 
 }    
 
 model Content {  
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId  
-  title       String  
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId 
+  title       String
   description String?  
-  content     String  
-  views       Int      @default(0) 
-  published   Boolean  @default(false)  
-  createdAt   DateTime @default(now())  
-  updatedAt   DateTime @updatedAt  
+  content     String
+  slug        String?    @unique
+  excerpt     String?
+  coverImage  String?
+  published   Boolean   @default(false)
+  featured    Boolean?   @default(false)
   authorId    String   @db.ObjectId  
   author      User     @relation(fields: [authorId], references: [id])  
+  categories  Category[]? @relation(fields: [categoryIds], references: [id])
+  categoryIds String[]?  @db.ObjectId
+  tags        String[]?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  views       Int       @default(0)
 }  
   
 enum Role {  

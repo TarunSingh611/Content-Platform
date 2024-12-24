@@ -18,7 +18,6 @@ export default function DashboardPage() {
     <div className="space-y-8">  
       <div className="flex justify-between items-center">  
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>  
-        <button className="btn-primary">New Content</button>  
       </div>  
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">  
@@ -41,8 +40,6 @@ export default function DashboardPage() {
           icon={BarChart2}  
         />  
       </div>  
-
-      <ContentEditor />  
       <AnalyticsDashboard data={mockAnalyticsData} />  
     </div>  
   );  
