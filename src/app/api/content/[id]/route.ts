@@ -1,11 +1,11 @@
-// src/app/api/content/[id]/route.ts
 import { NextResponse } from 'next/server';
 import { getServerAuthSession } from '@/lib/auth-utils';
 import prisma from '@/lib/utils/db';
+import { type NextRequest } from 'next/server';
 
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: any }
 ) {
   try {
     const session = await getServerAuthSession();
@@ -13,19 +13,19 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { title, content, description, published } = await req.json();
+    const { title, content, description, published } = await request.json();
 
     const updatedContent = await prisma.content.update({
       where: {
         id: params.id,
-        authorId: session.user.id // Ensure user owns the content
+        authorId: session.user.id,
       },
       data: {
         title,
         content,
         description,
-        published
-      }
+        published,
+      },
     });
 
     return NextResponse.json(updatedContent);
@@ -39,8 +39,8 @@ export async function PUT(
 }
 
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: any }
 ) {
   try {
     const session = await getServerAuthSession();
@@ -51,8 +51,8 @@ export async function DELETE(
     await prisma.content.delete({
       where: {
         id: params.id,
-        authorId: session.user.id // Ensure user owns the content
-      }
+        authorId: session.user.id,
+      },
     });
 
     return NextResponse.json({ success: true });

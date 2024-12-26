@@ -1,11 +1,11 @@
 // src/app/auth/verify-email/page.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -82,6 +82,17 @@ export default function VerifyEmailPage() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+
+export default function VerifyEmailPage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-cyan-100 flex items-center justify-center p-4">
+      <Suspense fallback={<LoadingSpinner/>}>
+        <VerifyEmailContent />
+      </Suspense>
     </div>
   );
 }
