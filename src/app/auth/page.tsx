@@ -6,26 +6,50 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
+  const [demoError, setDemoError] = useState<string>('');
+  const [demoLoading, setDemoLoading] = useState<boolean>(false);
 
   const handleDemoLogin = async () => {
     try {
+      const demoEmail = process.env.NEXT_PUBLIC_DEMO_EMAIL;
+      const demoPassword = process.env.NEXT_PUBLIC_DEMO_PASSWORD;
+      
+      if (!demoEmail || !demoPassword) {
+        setDemoError('Demo credentials not configured. Please check environment variables.');
+        console.error('Demo credentials missing:', { demoEmail: !!demoEmail, demoPassword: !!demoPassword });
+        return;
+      }
+      
+      console.log('Attempting demo login with:', demoEmail);
+      
       const result = await signIn('credentials', {
-        email: process.env.NEXT_PUBLIC_DEMO_EMAIL,
-        password: process.env.NEXT_PUBLIC_DEMO_PASSWORD,
+        email: demoEmail,
+        password: demoPassword,
         redirect: false,
       });
 
+      console.log('Demo login result:', result);
+
       if (result?.error) {
         console.error('Demo login failed:', result.error);
-      } else {
+        setDemoError(result.error);
+      } else if (result?.ok) {
+        console.log('Demo login successful, redirecting to dashboard');
         router.push('/dashboard');
         router.refresh();
+      } else {
+        console.log('Demo login result:', result);
+        setDemoError('Login failed. Please check the console for details.');
       }
     } catch (error) {
       console.error('Demo login error:', error);
+      setDemoError('An unexpected error occurred during demo login.');
+    } finally {
+      setDemoLoading(false);
     }
   };
 
@@ -68,10 +92,20 @@ export default function LoginPage() {
           <div className="mt-4 text-center">
             <button
               onClick={handleDemoLogin}
-              className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md shadow-sm transition-colors duration-200"
+              disabled={demoLoading}
+              className={`w-full py-2 px-4 font-medium rounded-md shadow-sm transition-colors duration-200 ${
+                demoLoading 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-green-600 hover:bg-green-700 text-white'
+              }`}
             >
-              Demo Login
+              {demoLoading ? 'Logging in...' : 'Demo Login'}
             </button>
+            {demoError && (
+              <div className="mt-2 text-sm text-red-600">
+                {demoError}
+              </div>
+            )}
           </div>
 
           <div className="mt-6 space-y-2 text-center">
