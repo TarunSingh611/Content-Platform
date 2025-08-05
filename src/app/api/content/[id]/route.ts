@@ -4,7 +4,7 @@ import prisma from '@/lib/utils/db';
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerAuthSession();
@@ -12,9 +12,11 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     const content = await prisma.content.findUnique({
       where: { 
-        id: params.id,
+        id: id,
         authorId: session.user.id // Ensure user can only access their own content
       },
     });
@@ -35,7 +37,7 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerAuthSession();
@@ -43,11 +45,12 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const { title, content, description, excerpt, coverImage, tags, published, featured } = await req.json();
 
     const updatedContent = await prisma.content.update({
       where: { 
-        id: params.id,
+        id: id,
         authorId: session.user.id // Ensure user can only update their own content
       },
       data: {
@@ -74,7 +77,7 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerAuthSession();
@@ -82,9 +85,11 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     await prisma.content.delete({
       where: { 
-        id: params.id,
+        id: id,
         authorId: session.user.id // Ensure user can only delete their own content
       },
     });

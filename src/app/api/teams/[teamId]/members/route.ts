@@ -2,14 +2,13 @@ import { NextResponse } from 'next/server';
 import { getServerAuthSession } from '@/lib/auth-utils';
 import prisma from '@/lib/utils/db';
 
-// Modify the context type to wrap params in a Promise
 export async function POST(
   req: Request,
   context: { params: Promise<{ teamId: string }> }
 ) {
   try {
     // Resolve the Promise for params
-    const params = await context.params;
+    const { teamId } = await context.params;
 
     const session = await getServerAuthSession();
     if (!session) {
@@ -29,7 +28,7 @@ export async function POST(
 
     const member = await prisma.teamMember.create({
       data: {
-        teamId: params.teamId,
+        teamId: teamId,
         userId: user.id,
         role
       }
