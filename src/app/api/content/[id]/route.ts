@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getServerAuthSession } from '@/lib/auth-utils';
 import prisma from '@/lib/utils/db';
-import { type NextRequest } from 'next/server';
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: any }
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerAuthSession();
@@ -13,18 +12,53 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { title, content, description, published } = await request.json();
+    const content = await prisma.content.findUnique({
+      where: { 
+        id: params.id,
+        authorId: session.user.id // Ensure user can only access their own content
+      },
+    });
+
+    if (!content) {
+      return NextResponse.json({ error: 'Content not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(content);
+  } catch (error) {
+    console.error('Error fetching content:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch content' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerAuthSession();
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { title, content, description, excerpt, coverImage, tags, published, featured } = await req.json();
 
     const updatedContent = await prisma.content.update({
-      where: {
+      where: { 
         id: params.id,
-        authorId: session.user.id,
+        authorId: session.user.id // Ensure user can only update their own content
       },
       data: {
         title,
         content,
         description,
-        published,
+        excerpt,
+        coverImage,
+        tags: tags || [],
+        published: published || false,
+        featured: featured || false,
       },
     });
 
@@ -39,8 +73,8 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: any }
+  req: Request,
+  { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerAuthSession();
@@ -49,13 +83,13 @@ export async function DELETE(
     }
 
     await prisma.content.delete({
-      where: {
+      where: { 
         id: params.id,
-        authorId: session.user.id,
+        authorId: session.user.id // Ensure user can only delete their own content
       },
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ message: 'Content deleted successfully' });
   } catch (error) {
     console.error('Error deleting content:', error);
     return NextResponse.json(

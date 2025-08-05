@@ -10,14 +10,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { title, content, description, published } = await req.json();
+    const { title, content, description, excerpt, coverImage, tags, published, featured } = await req.json();
 
     const newContent = await prisma.content.create({
       data: {
         title,
         content,
         description,
+        excerpt,
+        coverImage,
+        tags: tags || [],
         published: published || false,
+        featured: featured || false,
         author: {
           connect: { id: session.user.id }
         }

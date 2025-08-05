@@ -1,7 +1,7 @@
 'use client'  
   
 import { useEffect, useState } from 'react'  
-import { Bell, Search, Plus, MessageSquare, LogOut } from 'lucide-react'  
+import { Bell, Search, Plus, MessageSquare, LogOut, ExternalLink, Settings } from 'lucide-react'  
 import { useSession, signOut } from 'next-auth/react'  
   
 export default function Header() {  
@@ -99,6 +99,24 @@ export default function Header() {
               {/* Profile Dropdown Menu */}
               {showProfileMenu && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 profile-menu">
+                  {session?.user?.websiteUrl && (
+                    <a
+                      href={session.user.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Visit Site
+                    </a>
+                  )}
+                  <a
+                    href="/dashboard/settings"
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <Settings className="h-4 w-4 mr-2" />
+                    Settings
+                  </a>
                   <button
                     onClick={handleLogout}
                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

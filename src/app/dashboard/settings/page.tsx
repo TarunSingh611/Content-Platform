@@ -1,16 +1,20 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 export default function SettingsPage() {
+    const { data: session, update } = useSession();
     const [activeTab, setActiveTab] = useState('profile');
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
   
     const [profileData, setProfileData] = useState({
-      name: 'John Doe',
-      email: 'john@example.com',
-      avatar: 'https://placehold.co/100x100',
-      bio: 'Full-stack developer',
+      name: '',
+      email: '',
+      bio: '',
+      websiteUrl: '',
+      avatar: '',
       notifications: {
         email: true,
         push: false,
@@ -18,8 +22,21 @@ export default function SettingsPage() {
       },
       theme: 'light'
     });
-  
-    const handleProfileUpdate = async (e:any) => {
+
+    useEffect(() => {
+      if (session?.user) {
+        setProfileData(prev => ({
+          ...prev,
+          name: session.user.name || '',
+          email: session.user.email || '',
+          bio: session.user.bio || '',
+          websiteUrl: session.user.websiteUrl || '',
+          avatar: session.user.image || ''
+        }));
+      }
+    }, [session]);
+
+    const handleProfileUpdate = async (e: React.FormEvent) => {
       e.preventDefault();
       setLoading(true);
       try {
@@ -28,39 +45,73 @@ export default function SettingsPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(profileData)
         });
-  
+
         if (!response.ok) throw new Error('Failed to update profile');
-  
+
+        // Update session with new data
+        await update({
+          ...session,
+          user: {
+            ...session?.user,
+            name: profileData.name,
+            bio: profileData.bio,
+            websiteUrl: profileData.websiteUrl
+          }
+        });
+
         setSuccess(true);
+        toast.success('Profile updated successfully!');
         setTimeout(() => setSuccess(false), 3000);
       } catch (error) {
         console.error('Error updating profile:', error);
+        toast.error('Failed to update profile');
       } finally {
         setLoading(false);
       }
     };
-  
-    const handleNotificationToggle = (key:any) => {
-      setProfileData((prev:any) => ({
+
+    const handleNotificationToggle = (key: string) => {
+      setProfileData((prev) => ({
         ...prev,
         notifications: {
           ...prev.notifications,
-          [key]: !prev.notifications[key]
+          [key]: !prev.notifications[key as keyof typeof prev.notifications]
         }
       }));
     };
-  
-    const handleThemeChange = (theme:any) => {
+
+    const handleThemeChange = (theme: string) => {
       setProfileData(prev => ({ ...prev, theme }));
       // Implement theme change logic here
     };
-  
+
+    const handleWebsiteUrlChange = (url: string) => {
+      // Basic URL validation
+      if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      setProfileData(prev => ({ ...prev, websiteUrl: url }));
+    };
+
     return (
       <div className="p-6 max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Settings</h1>
+          {profileData.websiteUrl && (
+            <a
+              href={profileData.websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              Visit Site
+            </a>
+          )}
         </div>
-  
+
         <div className="bg-white rounded-lg shadow">
           <div className="border-b border-gray-200">
             <nav className="flex -mb-px">
@@ -79,14 +130,14 @@ export default function SettingsPage() {
               ))}
             </nav>
           </div>
-  
+
           <div className="p-6">
             {activeTab === 'profile' && (
               <form onSubmit={handleProfileUpdate} className="space-y-6">
                 <div className="flex items-center space-x-6">
                   <div className="relative">
                     <img
-                      src={profileData.avatar}
+                      src={profileData.avatar || 'https://placehold.co/100x100'}
                       alt="Profile"
                       className="w-20 h-20 rounded-full"
                     />
@@ -104,7 +155,7 @@ export default function SettingsPage() {
                     <p className="text-sm text-gray-500">JPG, GIF or PNG. Max size of 800K</p>
                   </div>
                 </div>
-  
+
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Name</label>
@@ -115,17 +166,30 @@ export default function SettingsPage() {
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
-  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Email</label>
                     <input
                       type="email"
                       value={profileData.email}
-                      onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                      disabled
+                      className="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm"
+                    />
+                    <p className="mt-1 text-sm text-gray-500">Email cannot be changed</p>
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700">Website URL</label>
+                    <input
+                      type="url"
+                      value={profileData.websiteUrl}
+                      onChange={(e) => handleWebsiteUrlChange(e.target.value)}
+                      placeholder="https://your-blog-site.com"
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     />
+                    <p className="mt-1 text-sm text-gray-500">URL to your connected blog or website</p>
                   </div>
-  
+
                   <div className="sm:col-span-2">
                     <label className="block text-sm font-medium text-gray-700">Bio</label>
                     <textarea
@@ -136,7 +200,7 @@ export default function SettingsPage() {
                     />
                   </div>
                 </div>
-  
+
                 <div className="flex justify-end">
                   <button
                     type="submit"
@@ -147,7 +211,7 @@ export default function SettingsPage() {
                     {loading ? 'Saving...' : 'Save Changes'}
                   </button>
                 </div>
-  
+
                 {success && (
                   <div className="mt-4 p-4 bg-green-50 text-green-800 rounded-md">
                     Profile updated successfully!
@@ -155,7 +219,7 @@ export default function SettingsPage() {
                 )}
               </form>
             )}
-  
+
             {activeTab === 'notifications' && (
               <div className="space-y-6">
                 <h3 className="text-lg font-medium">Notification Preferences</h3>
@@ -187,7 +251,7 @@ export default function SettingsPage() {
                 </div>
               </div>
             )}
-  
+
             {activeTab === 'security' && (
               <div className="space-y-6">
                 <h3 className="text-lg font-medium">Security Settings</h3>
@@ -219,7 +283,7 @@ export default function SettingsPage() {
                 </div>
               </div>
             )}
-  
+
             {activeTab === 'appearance' && (
               <div className="space-y-6">
                 <h3 className="text-lg font-medium">Appearance Settings</h3>

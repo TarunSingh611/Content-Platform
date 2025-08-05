@@ -21,11 +21,15 @@ ChartJS.register(
 )  
 
 interface ContentPerformanceProps {  
-  data: {  
-    labels: string[]  
-    views: number[]  
-    engagement: number[]  
-  }  
+  data: Array<{
+    id: string;
+    title: string;
+    views: number;
+    engagement: number;
+    likes: number;
+    shares: number;
+    comments: number;
+  }>
 }  
 
 export default function ContentPerformance({ data }: ContentPerformanceProps) {  
@@ -55,20 +59,25 @@ export default function ContentPerformance({ data }: ContentPerformanceProps) {
     maintainAspectRatio: false,  
   }  
 
+  // Transform data for chart
+  const labels = data.map(item => item.title.substring(0, 20) + (item.title.length > 20 ? '...' : ''));
+  const views = data.map(item => item.views);
+  const engagement = data.map(item => item.engagement);
+
   const chartData = {  
-    labels: data.labels,  
+    labels: labels,  
     datasets: [  
       {  
         label: 'Views',  
-        data: data.views,  
+        data: views,  
         backgroundColor: 'rgba(79, 70, 229, 0.6)',  
         borderColor: 'rgb(79, 70, 229)',  
         borderWidth: 1,  
         borderRadius: 4,  
       },  
       {  
-        label: 'Engagement',  
-        data: data.engagement,  
+        label: 'Engagement (%)',  
+        data: engagement,  
         backgroundColor: 'rgba(16, 185, 129, 0.6)',  
         borderColor: 'rgb(16, 185, 129)',  
         borderWidth: 1,  
@@ -76,6 +85,10 @@ export default function ContentPerformance({ data }: ContentPerformanceProps) {
       },  
     ],  
   }  
+
+  // Find best and worst performing content
+  const maxViewsIndex = views.indexOf(Math.max(...views));
+  const minViewsIndex = views.indexOf(Math.min(...views));
 
   return (  
     <div className="bg-white rounded-lg shadow-lg p-6">  
@@ -96,14 +109,16 @@ export default function ContentPerformance({ data }: ContentPerformanceProps) {
         <div className="bg-gray-50 p-4 rounded-lg">  
           <p className="text-sm text-gray-600">Best Performing</p>  
           <p className="text-lg font-semibold mt-1">  
-            {data.labels[data.views.indexOf(Math.max(...data.views))]}  
+            {data[maxViewsIndex]?.title.substring(0, 25) + (data[maxViewsIndex]?.title.length > 25 ? '...' : '')}
           </p>  
+          <p className="text-sm text-gray-500">{data[maxViewsIndex]?.views.toLocaleString()} views</p>
         </div>  
         <div className="bg-gray-50 p-4 rounded-lg">  
           <p className="text-sm text-gray-600">Needs Improvement</p>  
           <p className="text-lg font-semibold mt-1">  
-            {data.labels[data.views.indexOf(Math.min(...data.views))]}  
+            {data[minViewsIndex]?.title.substring(0, 25) + (data[minViewsIndex]?.title.length > 25 ? '...' : '')}
           </p>  
+          <p className="text-sm text-gray-500">{data[minViewsIndex]?.views.toLocaleString()} views</p>
         </div>  
       </div>  
     </div>  

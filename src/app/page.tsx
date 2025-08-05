@@ -9,24 +9,30 @@ export default function HomePage() {
     <div className="bg-gray-50">  
       {/* Hero Section */}  
       <section className="relative bg-gradient-to-r from-indigo-600 to-purple-600 text-white">  
-        <div className="container mx-auto px-6 py-20 text-center">  
+        <div className="container mx-auto px-6 py-20 text-left">  
           <h1 className="text-5xl font-extrabold leading-tight">  
             Revolutionize Your Content Management  
           </h1>  
           <p className="mt-4 text-lg text-gray-200">  
             AI-powered tools to create, manage, and analyze your content with ease.  
-          </p>  
+            This Project has two parts:
+            <ul>
+              <li>1. A blog website</li>
+              <li>2. A content management system</li>
+            </ul>
+            The content in blog is genrated by AI using our other project called "AI Content Generator"
+           </p>  
           <div className="mt-8 flex justify-center space-x-4">  
-            <Link href="/dashboard">  
+            <a target='_blank' href="/dashboard" rel="noopener noreferrer">  
               <button className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-lg shadow-lg hover:bg-gray-100">  
-                Get Started  
+                View AI Content Generator
               </button>  
-            </Link>  
-            <Link href="/features">  
+            </a>  
+            <a href="https://blogg-ed.vercel.app/" target="_blank" rel="noopener noreferrer">  
               <button className="px-6 py-3 bg-indigo-700 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-800">  
-                Learn More  
+                View Our Blog website 
               </button>  
-            </Link>  
+            </a>  
           </div>  
         </div>   
       </section>  

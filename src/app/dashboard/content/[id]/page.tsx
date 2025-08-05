@@ -1,83 +1,78 @@
-// src/app/dashboard/content/[id]/page.tsx  
-import { redirect, notFound } from 'next/navigation';  
-import ContentEditor from '@/components/ContentEditor';  
-import { getServerAuthSession } from '@/lib/auth-utils';  
-import prisma from '@/lib/utils/db';  
+'use client';
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import ContentEditor from '@/components/ContentEditor';
+import toast from 'react-hot-toast';
 
-interface PageProps {  
-  params: Promise<{ id: string }>; // Change to Promise  
-}  
+interface Content {
+  id: string;
+  title: string;
+  content: string;
+  description?: string;
+  excerpt?: string;
+  coverImage?: string;
+  tags?: string[];
+  published: boolean;
+  featured: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
-export default async function ContentDetailPage({ params }: PageProps) {  
-  const session = await getServerAuthSession();  
+export default function EditContentPage() {
+  const params = useParams();
+  const router = useRouter();
+  const [content, setContent] = useState<Content | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!session) {  
-    redirect('/auth');  
-  }  
+  useEffect(() => {
+    if (params.id) {
+      fetchContent();
+    }
+  }, [params.id]);
 
-  // Await the params to resolve the promise  
-  const resolvedParams = await params;  
+  const fetchContent = async () => {
+    try {
+      const response = await fetch(`/api/content/${params.id}`);
+      if (!response.ok) throw new Error('Failed to fetch content');
+      const data = await response.json();
+      setContent(data);
+    } catch (error) {
+      toast.error('Failed to load content');
+      router.push('/dashboard/content');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Handle new content creation  
-  if (resolvedParams.id === 'new') {  
-    return (  
-      <div className="p-6">  
-        <div className="mb-6">  
-          <h1 className="text-2xl font-bold">Create New Content</h1>  
-        </div>  
-        <ContentEditor  
-          initialContent={{  
-            title: '',  
-            content: '',  
-            description: '',  
-            published: false,  
-          }}  
-          isNew={true}  
-        />  
-      </div>  
-    );  
-  }  
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+          <div className="space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  // Fetch existing content  
-  const content = await prisma.content.findUnique({  
-    where: {  
-      id: resolvedParams.id,  
-    },  
-    include: {  
-      author: {  
-        select: {  
-          id: true,  
-          name: true,  
-          email: true,  
-        },  
-      },  
-    },  
-  });  
+  if (!content) {
+    return (
+      <div className="p-6">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900">Content not found</h2>
+          <p className="text-gray-600 mt-2">The content you're looking for doesn't exist.</p>
+        </div>
+      </div>
+    );
+  }
 
-  if (!content) {  
-    notFound();  
-  }  
-
-  // Check if user is the author  
-  if (content.authorId !== session.user.id) {  
-    redirect('/dashboard/content');  
-  }  
-
-  return (  
-    <div className="p-6">  
-      <div className="mb-6">  
-        <h1 className="text-2xl font-bold">Edit Content</h1>  
-      </div>  
-      <ContentEditor  
-        initialContent={{  
-          id: content.id,  
-          title: content.title,  
-          content: content.content,  
-          description: content.description || '',  
-          published: content.published,  
-        }}  
-        isNew={false}  
-      />  
-    </div>  
-  );  
+  return (
+    <div className="p-6">
+      <ContentEditor initialContent={content} isNew={false} />
+    </div>
+  );
 }  

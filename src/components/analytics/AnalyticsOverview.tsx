@@ -4,12 +4,12 @@ import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/solid'
 
 interface AnalyticsOverviewProps {  
   stats: {  
-    totalContent: number  
-    totalViews: number  
-    engagementRate: number  
-    contentGrowth: number  
-    viewsGrowth: number  
-    engagementGrowth: number  
+    totalViews: number
+    totalLikes: number
+    totalShares: number
+    totalComments: number
+    avgEngagement: number
+    growthRate: number
   }  
 }  
 
@@ -19,12 +19,12 @@ export default function AnalyticsOverview({ stats }: AnalyticsOverviewProps) {
       <div className="bg-white rounded-lg shadow p-6">  
         <div className="flex items-center justify-between">  
           <div>  
-            <p className="text-sm font-medium text-gray-600">Total Content</p>  
-            <p className="text-2xl font-semibold mt-2">{stats.totalContent}</p>  
+            <p className="text-sm font-medium text-gray-600">Total Views</p>  
+            <p className="text-2xl font-semibold mt-2">{stats.totalViews.toLocaleString()}</p>  
           </div>  
-          <div className={`flex items-center ${stats.contentGrowth >= 0 ? 'text-green-500' : 'text-red-500'}`}>  
-            {stats.contentGrowth >= 0 ? <ArrowUpIcon className="w-4 h-4" /> : <ArrowDownIcon className="w-4 h-4" />}  
-            <span className="ml-1">{Math.abs(stats.contentGrowth)}%</span>  
+          <div className="flex items-center text-green-500">  
+            <ArrowUpIcon className="w-4 h-4" />  
+            <span className="ml-1">{stats.growthRate}%</span>  
           </div>  
         </div>  
       </div>  
@@ -32,12 +32,12 @@ export default function AnalyticsOverview({ stats }: AnalyticsOverviewProps) {
       <div className="bg-white rounded-lg shadow p-6">  
         <div className="flex items-center justify-between">  
           <div>  
-            <p className="text-sm font-medium text-gray-600">Total Views</p>  
-            <p className="text-2xl font-semibold mt-2">{stats.totalViews}</p>  
+            <p className="text-sm font-medium text-gray-600">Total Likes</p>  
+            <p className="text-2xl font-semibold mt-2">{stats.totalLikes.toLocaleString()}</p>  
           </div>  
-          <div className={`flex items-center ${stats.viewsGrowth >= 0 ? 'text-green-500' : 'text-red-500'}`}>  
-            {stats.viewsGrowth >= 0 ? <ArrowUpIcon className="w-4 h-4" /> : <ArrowDownIcon className="w-4 h-4" />}  
-            <span className="ml-1">{Math.abs(stats.viewsGrowth)}%</span>  
+          <div className="flex items-center text-green-500">  
+            <ArrowUpIcon className="w-4 h-4" />  
+            <span className="ml-1">18%</span>  
           </div>  
         </div>  
       </div>  
@@ -46,11 +46,11 @@ export default function AnalyticsOverview({ stats }: AnalyticsOverviewProps) {
         <div className="flex items-center justify-between">  
           <div>  
             <p className="text-sm font-medium text-gray-600">Engagement Rate</p>  
-            <p className="text-2xl font-semibold mt-2">{stats.engagementRate}%</p>  
+            <p className="text-2xl font-semibold mt-2">{stats.avgEngagement}%</p>  
           </div>  
-          <div className={`flex items-center ${stats.engagementGrowth >= 0 ? 'text-green-500' : 'text-red-500'}`}>  
-            {stats.engagementGrowth >= 0 ? <ArrowUpIcon className="w-4 h-4" /> : <ArrowDownIcon className="w-4 h-4" />}  
-            <span className="ml-1">{Math.abs(stats.engagementGrowth)}%</span>  
+          <div className="flex items-center text-green-500">  
+            <ArrowUpIcon className="w-4 h-4" />  
+            <span className="ml-1">6%</span>  
           </div>  
         </div>  
       </div>  
