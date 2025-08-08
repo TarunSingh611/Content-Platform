@@ -1,293 +1,240 @@
-// app/dashboard/media/page.tsx  
-import { redirect } from 'next/navigation'   
-import MediaGrid from '@/components/media/MediaGrid'  
-import MediaUpload from '@/components/media/MediaUpload'  
-import MediaFilters from '@/components/media/MediaFilters'  
-import { getServerAuthSession } from '@/lib/auth-utils'
-import prisma from '@/lib/utils/db'
-import DemoRibbon from '@/components/ui/DemoRibbon';
-import { Upload, Image, Video, File, Folder, Search, Filter, Grid, List, Clock } from 'lucide-react';
+'use client'
 
-// Real media data
-const realMediaData = [
-  {
-    id: '1',
-    name: 'blog-header-image.jpg',
-    type: 'image',
-    size: 2457600, // 2.4MB
-    url: '/api/media/1',
-    thumbnail: '/api/media/1/thumbnail',
-    uploadedAt: '2024-01-15T10:30:00Z',
-    category: 'Blog Images',
-    tags: ['header', 'blog', 'design'],
-    dimensions: { width: 1920, height: 1080 },
-    usage: 3
-  },
-  {
-    id: '2',
-    name: 'product-screenshot.png',
-    type: 'image',
-    size: 1843200, // 1.8MB
-    url: '/api/media/2',
-    thumbnail: '/api/media/2/thumbnail',
-    uploadedAt: '2024-01-14T14:20:00Z',
-    category: 'Screenshots',
-    tags: ['product', 'screenshot', 'ui'],
-    dimensions: { width: 1366, height: 768 },
-    usage: 1
-  },
-  {
-    id: '3',
-    name: 'tutorial-video.mp4',
-    type: 'video',
-    size: 52428800, // 50MB
-    url: '/api/media/3',
-    thumbnail: '/api/media/3/thumbnail',
-    uploadedAt: '2024-01-13T09:15:00Z',
-    category: 'Videos',
-    tags: ['tutorial', 'video', 'educational'],
-    duration: '05:32',
-    usage: 2
-  },
-  {
-    id: '4',
-    name: 'logo-vector.svg',
-    type: 'image',
-    size: 15360, // 15KB
-    url: '/api/media/4',
-    thumbnail: '/api/media/4/thumbnail',
-    uploadedAt: '2024-01-12T16:45:00Z',
-    category: 'Logos',
-    tags: ['logo', 'vector', 'brand'],
-    dimensions: { width: 512, height: 512 },
-    usage: 5
-  },
-  {
-    id: '5',
-    name: 'presentation-slides.pdf',
-    type: 'document',
-    size: 3145728, // 3MB
-    url: '/api/media/5',
-    thumbnail: '/api/media/5/thumbnail',
-    uploadedAt: '2024-01-11T11:30:00Z',
-    category: 'Documents',
-    tags: ['presentation', 'pdf', 'slides'],
-    pages: 12,
-    usage: 1
-  },
-  {
-    id: '6',
-    name: 'background-pattern.jpg',
-    type: 'image',
-    size: 819200, // 800KB
-    url: '/api/media/6',
-    thumbnail: '/api/media/6/thumbnail',
-    uploadedAt: '2024-01-10T13:20:00Z',
-    category: 'Backgrounds',
-    tags: ['background', 'pattern', 'texture'],
-    dimensions: { width: 800, height: 600 },
-    usage: 0
+import { useState, useEffect } from 'react'
+import { Plus, Upload, Image, Video, FileText } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import MediaUpload from '@/components/media/MediaUpload'
+import MediaGrid from '@/components/media/MediaGrid'
+import MediaFilters from '@/components/media/MediaFilters'
+import { MediaFile } from '@/types/media'
+
+export default function MediaPage() {
+  const [media, setMedia] = useState<MediaFile[]>([])
+  const [filteredMedia, setFilteredMedia] = useState<MediaFile[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showUpload, setShowUpload] = useState(false)
+  const [filters, setFilters] = useState({
+    type: 'all',
+    search: '',
+    view: 'grid' as 'grid' | 'list'
+  })
+  const [editingMedia, setEditingMedia] = useState<{ id: string; title: string } | null>(null)
+
+  // Fetch media files
+  const fetchMedia = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/media')
+      if (response.ok) {
+        const data = await response.json()
+        setMedia(data.media || [])
+      }
+    } catch (error) {
+      console.error('Error fetching media:', error)
+    } finally {
+      setLoading(false)
+    }
   }
-];
 
-export default async function MediaPage() {  
-    const session = await getServerAuthSession()
+  useEffect(() => {
+    fetchMedia()
+  }, [])
 
-  if (!session) {  
-    redirect('/auth/signin')  
-  }  
+  // Filter media based on current filters
+  useEffect(() => {
+    let filtered = media
 
-  // Use real data instead of fetching from database for demo
-  const media = realMediaData;
+    // Filter by type
+    if (filters.type !== 'all') {
+      filtered = filtered.filter(file => file.type === filters.type)
+    }
 
-  const stats = {
-    total: media.length,
-    images: media.filter(m => m.type === 'image').length,
-    videos: media.filter(m => m.type === 'video').length,
-    documents: media.filter(m => m.type === 'document').length,
-    totalSize: media.reduce((sum, m) => sum + m.size, 0)
-  };
+    // Filter by search
+    if (filters.search) {
+      filtered = filtered.filter(file =>
+        file.title.toLowerCase().includes(filters.search.toLowerCase())
+      )
+    }
 
-  return (  
-    <div className="p-6 space-y-6">  
+    setFilteredMedia(filtered)
+  }, [media, filters])
+
+  // Handle upload success
+  const handleUploadSuccess = (newMedia: MediaFile) => {
+    setMedia(prev => [newMedia, ...prev])
+    setShowUpload(false)
+  }
+
+  // Handle upload error
+  const handleUploadError = (error: string) => {
+    console.error('Upload error:', error)
+    // You could add a toast notification here
+  }
+
+  // Handle media deletion
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this media file?')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/media/${id}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        setMedia(prev => prev.filter(file => file.id !== id))
+      } else {
+        console.error('Failed to delete media')
+      }
+    } catch (error) {
+      console.error('Error deleting media:', error)
+    }
+  }
+
+  // Handle media edit
+  const handleEdit = async (id: string, title: string) => {
+    try {
+      const response = await fetch(`/api/media/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title }),
+      })
+
+      if (response.ok) {
+        setMedia(prev =>
+          prev.map(file =>
+            file.id === id ? { ...file, title } : file
+          )
+        )
+      } else {
+        console.error('Failed to update media')
+      }
+    } catch (error) {
+      console.error('Error updating media:', error)
+    }
+  }
+
+  // Get media statistics
+  const getMediaStats = () => {
+    const images = media.filter(file => file.type === 'image').length
+    const videos = media.filter(file => file.type === 'video').length
+    const documents = media.filter(file => file.type === 'document').length
+    const totalSize = media.reduce((sum, file) => sum + file.size, 0)
+
+    return { images, videos, documents, totalSize }
+  }
+
+  const stats = getMediaStats()
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mobile-space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">  
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Media Library</h1>
-          <p className="text-gray-600 mt-1">Manage and organize your media files</p>
+          <h1 className="mobile-heading font-bold text-gray-900">Media Library</h1>
+          <p className="mobile-text text-gray-600 mt-1">Manage your images, videos, and documents</p>
         </div>
-        <div className="flex items-center gap-3">
-          <DemoRibbon message="AI Media Organization - Coming Soon!" />
-          <MediaUpload />  
-        </div>
+        <Button onClick={() => setShowUpload(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          Upload Media
+        </Button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Files</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+      {/* Stats */}
+      <div className="mobile-grid gap-4">
+        <div className="mobile-card">
+          <div className="flex items-center">
+            <Image className="w-8 h-8 text-blue-500" />
+            <div className="ml-3">
+              <p className="mobile-text-sm font-medium text-gray-600">Images</p>
+              <p className="mobile-text-2xl font-bold text-gray-900">{stats.images}</p>
             </div>
-            <Folder className="h-8 w-8 text-blue-600" />
           </div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Images</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.images}</p>
+        <div className="mobile-card">
+          <div className="flex items-center">
+            <Video className="w-8 h-8 text-green-500" />
+            <div className="ml-3">
+              <p className="mobile-text-sm font-medium text-gray-600">Videos</p>
+              <p className="mobile-text-2xl font-bold text-gray-900">{stats.videos}</p>
             </div>
-            <Image className="h-8 w-8 text-green-600" />
           </div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Videos</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.videos}</p>
+        <div className="mobile-card">
+          <div className="flex items-center">
+            <FileText className="w-8 h-8 text-gray-500" />
+            <div className="ml-3">
+              <p className="mobile-text-sm font-medium text-gray-600">Documents</p>
+              <p className="mobile-text-2xl font-bold text-gray-900">{stats.documents}</p>
             </div>
-            <Video className="h-8 w-8 text-purple-600" />
           </div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Size</p>
-              <p className="text-2xl font-bold text-gray-900">{(stats.totalSize / 1024 / 1024).toFixed(1)}MB</p>
+        <div className="mobile-card">
+          <div className="flex items-center">
+            <Upload className="w-8 h-8 text-purple-500" />
+            <div className="ml-3">
+              <p className="mobile-text-sm font-medium text-gray-600">Total Size</p>
+              <p className="mobile-text-2xl font-bold text-gray-900">{formatFileSize(stats.totalSize)}</p>
             </div>
-            <File className="h-8 w-8 text-orange-600" />
           </div>
         </div>
       </div>
 
-      {/* Search and Filter Bar */}
-      <div className="bg-white rounded-lg shadow p-4">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <input
-                type="text"
-                placeholder="Search media files..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+      {/* Filters */}
+      <MediaFilters
+        onFilterChange={setFilters}
+        totalFiles={filteredMedia.length}
+      />
+
+      {/* Media Grid */}
+      <MediaGrid
+        media={filteredMedia}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+      />
+
+      {/* Upload Modal */}
+      {showUpload && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold">Upload Media</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowUpload(false)}
+                >
+                  ×
+                </Button>
+              </div>
+              <MediaUpload
+                onUploadSuccess={handleUploadSuccess}
+                onUploadError={handleUploadError}
               />
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-gray-400" />
-            <select className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-              <option value="all">All Types</option>
-              <option value="image">Images</option>
-              <option value="video">Videos</option>
-              <option value="document">Documents</option>
-            </select>
-            <select className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-              <option value="recent">Recent</option>
-              <option value="name">Name</option>
-              <option value="size">Size</option>
-              <option value="usage">Usage</option>
-            </select>
-            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-50">
-              <Grid className="h-4 w-4" />
-            </button>
-            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-50">
-              <List className="h-4 w-4" />
-            </button>
-          </div>
         </div>
-      </div>
-
-      {/* Media Grid */}
-      <div className="bg-white rounded-lg shadow">
-        <MediaFilters />  
-        <MediaGrid media={media} />
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Quick Upload</h3>
-            <Upload className="h-5 w-5 text-gray-400" />
-          </div>
-          <div className="space-y-3">
-            <button className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
-              Upload Images
-            </button>
-            <button className="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
-              Upload Videos
-            </button>
-            <button className="w-full bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors">
-              Upload Documents
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Recent Uploads</h3>
-            <Clock className="h-5 w-5 text-gray-400" />
-          </div>
-          <div className="space-y-3">
-            {media.slice(0, 3).map((item) => (
-              <div key={item.id} className="flex items-center gap-3 p-2 bg-gray-50 rounded-md">
-                <div className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center">
-                  {item.type === 'image' && <Image className="h-4 w-4" />}
-                  {item.type === 'video' && <Video className="h-4 w-4" />}
-                  {item.type === 'document' && <File className="h-4 w-4" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{item.name}</p>
-                  <p className="text-xs text-gray-500">{(item.size / 1024 / 1024).toFixed(1)}MB</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Storage Usage</h3>
-            <Folder className="h-5 w-5 text-gray-400" />
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm">Images</span>
-              <span className="text-sm font-medium">{stats.images} files</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm">Videos</span>
-              <span className="text-sm font-medium">{stats.videos} files</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm">Documents</span>
-              <span className="text-sm font-medium">{stats.documents} files</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-              <div className="bg-blue-600 h-2 rounded-full" style={{ width: '65%' }}></div>
-            </div>
-            <p className="text-xs text-gray-500">65% of storage used</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Upcoming Features */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold mb-4">Upcoming Media Features</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <DemoRibbon message="AI Image Tagging - Coming Soon!" />
-          <DemoRibbon message="Auto Image Optimization - Coming Soon!" />
-          <DemoRibbon message="Video Transcoding - Coming Soon!" />
-          <DemoRibbon message="Bulk Operations - Coming Soon!" />
-          <DemoRibbon message="Advanced Search - Coming Soon!" />
-          <DemoRibbon message="Cloud Storage Sync - Coming Soon!" />
-        </div>
-      </div>
-    </div>  
-  )  
+      )}
+    </div>
+  )
 }  

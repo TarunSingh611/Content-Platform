@@ -51,86 +51,43 @@ export default function LoginForm({ callbackUrl = '/dashboard' }: LoginFormProps
     }  
   };  
 
-  const inputStyles = {  
-    width: '100%',  
-    padding: '0.75rem',  
-    borderRadius: '0.375rem',  
-    border: '1px solid #D1D5DB',  
-    marginTop: '0.25rem',  
-    outline: 'none',  
-    transition: 'border-color 0.2s ease',  
-  };  
+  
 
-  const buttonStyles = {  
-    width: '100%',  
-    padding: '0.75rem 1rem',  
-    borderRadius: '0.375rem',  
-    backgroundColor: loading ? '#6B7280' : '#4F46E5',  
-    color: 'white',  
-    fontWeight: '500',  
-    border: 'none',  
-    cursor: loading ? 'not-allowed' : 'pointer',  
-    display: 'flex',  
-    justifyContent: 'center',  
-    alignItems: 'center',  
-    transition: 'background-color 0.2s ease',  
-  };  
-
-  const labelStyles = {  
-    display: 'block',  
-    fontSize: '0.875rem',  
-    fontWeight: '500',  
-    color: '#374151',  
-    marginBottom: '0.25rem',  
-  };  
-
-  return (  
-    <form  
-      onSubmit={handleSubmit}  
-      style={{   
-        display: 'flex',   
-        flexDirection: 'column',   
-        gap: '1.25rem',  
-        opacity: 1,  
-        transition: 'opacity 0.3s ease'  
-      }}  
-    >  
+      return (  
+      <form  
+        onSubmit={handleSubmit}  
+        className="flex flex-col gap-5 opacity-100 transition-opacity duration-300 ease-in-out"  
+      >  
       <div>  
-        <label htmlFor="email" style={labelStyles}>  
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">  
           Email  
         </label>  
-        <div style={{ width: '100%' }}>  
+        <div className="w-full">  
           <input  
             id="email"  
             type="email"  
             name="email"  
             required  
             autoComplete="email"  
-            style={{  
-              ...inputStyles,  
-              transition: 'transform 0.2s ease',  
-            }}  
+            className="w-full px-3 py-3 rounded-md border border-gray-300 bg-white text-gray-900 mt-1 outline-none transition-all duration-200 ease-in-out focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"  
             disabled={loading}  
           />  
         </div>  
       </div>  
 
       <div>  
-        <label htmlFor="password" style={labelStyles}>  
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">  
           Password  
         </label>  
-        <div style={{ position: 'relative' }}>  
-          <div style={{ width: '100%' }}>  
+        <div className="relative">  
+          <div className="w-full">  
             <input  
               id="password"  
               type={showPassword ? 'text' : 'password'}  
               name="password"  
               required  
               autoComplete="current-password"  
-              style={{  
-                ...inputStyles,  
-                transition: 'transform 0.2s ease',  
-              }}  
+              className="w-full px-3 py-3 rounded-md border border-gray-300 bg-white text-gray-900 mt-1 outline-none transition-all duration-200 ease-in-out focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed pr-10"  
               disabled={loading}  
             />  
           </div>  
@@ -138,34 +95,19 @@ export default function LoginForm({ callbackUrl = '/dashboard' }: LoginFormProps
             type="button"  
             onClick={() => setShowPassword(!showPassword)}  
             aria-label={showPassword ? 'Hide password' : 'Show password'}  
-            style={{  
-              position: 'absolute',  
-              right: '0.75rem',  
-              top: '50%',  
-              transform: 'translateY(-50%)',  
-              background: 'none',  
-              border: 'none',  
-              cursor: 'pointer',  
-              padding: '0.25rem',  
-            }}  
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-none border-none cursor-pointer p-1 text-gray-400 hover:text-gray-600"  
           >  
             {showPassword ? (  
-              <EyeOff size={20} color="#9CA3AF" />  
+              <EyeOff size={20} />  
             ) : (  
-              <Eye size={20} color="#9CA3AF" />  
+              <Eye size={20} />  
             )}  
           </button>  
         </div>  
       </div>  
 
       {error && (  
-        <div  
-          style={{   
-            color: '#DC2626',   
-            fontSize: '0.875rem',  
-            transition: 'opacity 0.3s ease'  
-          }}  
-        >  
+        <div className="text-red-600 text-sm transition-opacity duration-300 ease-in-out">  
           {error}  
         </div>  
       )}  
@@ -173,51 +115,19 @@ export default function LoginForm({ callbackUrl = '/dashboard' }: LoginFormProps
       <button  
         type="submit"  
         disabled={loading}  
-        style={{  
-          ...buttonStyles,  
-          transform: loading ? 'none' : 'scale(1)',  
-          transition: 'transform 0.2s ease, background-color 0.2s ease',  
-        }}  
+        className={`w-full px-4 py-3 rounded-md font-medium border-none cursor-pointer flex justify-center items-center transition-all duration-200 ease-in-out transform ${
+          loading 
+            ? 'bg-gray-400 cursor-not-allowed' 
+            : 'bg-indigo-600 hover:bg-indigo-700 active:scale-95'
+        } text-white`}  
       >  
         {loading ? (  
-          <div  
-            style={{  
-              width: '1.25rem',  
-              height: '1.25rem',  
-              border: '2px solid white',  
-              borderTopColor: 'transparent',  
-              borderRadius: '50%',  
-              animation: 'spin 1s linear infinite',  
-            }}  
-          />  
+          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />  
         ) : (  
-          'Sign in'  
+          'Sign In'  
         )}  
       </button>  
 
-      <style jsx>{`  
-        @keyframes spin {  
-          from {  
-            transform: rotate(0deg);  
-          }  
-          to {  
-            transform: rotate(360deg);  
-          }  
-        }  
-
-        input:hover, button:hover:not(:disabled) {  
-          transform: scale(1.01);  
-        }  
-
-        input:focus {  
-          border-color: #4F46E5;  
-          box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);  
-        }  
-
-        button:active:not(:disabled) {  
-          transform: scale(0.99);  
-        }  
-      `}</style>  
     </form>  
   );  
 }  

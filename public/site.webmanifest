@@ -1,0 +1,22 @@
+{
+  "name": "AI Content Platform",
+  "short_name": "AI Content",
+  "description": "AI-powered content management platform with advanced analytics, collaborative editing, and comprehensive blog features.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/AILogo.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}

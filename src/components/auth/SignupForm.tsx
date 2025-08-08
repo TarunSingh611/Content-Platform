@@ -99,145 +99,86 @@ export default function SignupForm() {
     }  
   };  
   
-  const inputStyles = {  
-    width: '100%',  
-    padding: '0.75rem',  
-    borderRadius: '0.375rem',  
-    border: '1px solid #D1D5DB',  
-    marginTop: '0.25rem',  
-    outline: 'none',  
-    transition: 'all 0.2s ease',  
-  };  
+    
   
-  const errorStyles = {  
-    color: '#DC2626',  
-    fontSize: '0.875rem',  
-    marginTop: '0.25rem',  
-  };  
-  
-  return (  
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>  
-      <div>  
-        <label htmlFor="name" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500' }}>  
-          Name  
-        </label>  
-        <input  
-          type="text"  
-          id="name"  
-          name="name"  
-          value={formData.name}  
-          onChange={handleChange}  
-          style={inputStyles}  
-          disabled={loading}  
-        />  
-        {errors.name && <div style={errorStyles}>{errors.name}</div>}  
-      </div>  
-  
-      <div>  
-        <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500' }}>  
-          Email  
-        </label>  
-        <input  
-          type="email"  
-          id="email"  
-          name="email"  
-          value={formData.email}  
-          onChange={handleChange}  
-          style={inputStyles}  
-          disabled={loading}  
-        />  
-        {errors.email && <div style={errorStyles}>{errors.email}</div>}  
-      </div>  
-  
-      <div>  
-        <label htmlFor="password" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500' }}>  
-          Password  
-        </label>  
-        <div style={{ position: 'relative' }}>  
+      return (  
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">  
+        <div>  
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">  
+            Name  
+          </label>  
           <input  
-            type={showPassword ? 'text' : 'password'}  
-            id="password"  
-            name="password"  
-            value={formData.password}  
+            type="text"  
+            id="name"  
+            name="name"  
+            value={formData.name}  
             onChange={handleChange}  
-            style={inputStyles}  
+            className="w-full px-3 py-3 rounded-md border border-gray-300 bg-white text-gray-900 outline-none transition-all duration-200 ease-in-out focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"  
             disabled={loading}  
           />  
-          <button  
-            type="button"  
-            onClick={() => setShowPassword(!showPassword)}  
-            style={{  
-              position: 'absolute',  
-              right: '0.75rem',  
-              top: '50%',  
-              transform: 'translateY(-50%)',  
-              background: 'none',  
-              border: 'none',  
-              cursor: 'pointer',  
-              padding: '0.25rem',  
-            }}  
-          >  
-            {showPassword ? (  
-              <EyeOff size={20} color="#9CA3AF" />  
-            ) : (  
-              <Eye size={20} color="#9CA3AF" />  
-            )}  
-          </button>  
+          {errors.name && <div className="text-red-600 text-sm mt-1">{errors.name}</div>}  
         </div>  
-        {errors.password && <div style={errorStyles}>{errors.password}</div>}  
-      </div>  
+
+        <div>  
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">  
+            Email  
+          </label>  
+          <input  
+            type="email"  
+            id="email"  
+            name="email"  
+            value={formData.email}  
+            onChange={handleChange}  
+            className="w-full px-3 py-3 rounded-md border border-gray-300 bg-white text-gray-900 outline-none transition-all duration-200 ease-in-out focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"  
+            disabled={loading}  
+          />  
+          {errors.email && <div className="text-red-600 text-sm mt-1">{errors.email}</div>}  
+        </div>  
+
+        <div>  
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">  
+            Password  
+          </label>  
+          <div className="relative">  
+            <input  
+              type={showPassword ? 'text' : 'password'}  
+              id="password"  
+              name="password"  
+              value={formData.password}  
+              onChange={handleChange}  
+              className="w-full px-3 py-3 rounded-md border border-gray-300 bg-white text-gray-900 outline-none transition-all duration-200 ease-in-out focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed pr-10"  
+              disabled={loading}  
+            />  
+            <button  
+              type="button"  
+              onClick={() => setShowPassword(!showPassword)}  
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-none border-none cursor-pointer p-1 text-gray-400 hover:text-gray-600"  
+            >  
+              {showPassword ? (  
+                <EyeOff size={20} />  
+              ) : (  
+                <Eye size={20} />  
+              )}  
+            </button>  
+          </div>  
+          {errors.password && <div className="text-red-600 text-sm mt-1">{errors.password}</div>}  
+        </div>  
   
-      <button  
+            <button  
         type="submit"  
         disabled={loading}  
-        style={{  
-          width: '100%',  
-          padding: '0.75rem',  
-          backgroundColor: loading ? '#6B7280' : '#4F46E5',  
-          color: 'white',  
-          border: 'none',  
-          borderRadius: '0.375rem',  
-          cursor: loading ? 'not-allowed' : 'pointer',  
-          transition: 'all 0.2s ease',  
-        }}  
+        className={`w-full px-4 py-3 rounded-md font-medium border-none cursor-pointer flex justify-center items-center transition-all duration-200 ease-in-out transform ${
+          loading 
+            ? 'bg-gray-400 cursor-not-allowed' 
+            : 'bg-indigo-600 hover:bg-indigo-700 active:scale-95'
+        } text-white`}  
       >  
         {loading ? (  
-          <div  
-            style={{  
-              width: '1.25rem',  
-              height: '1.25rem',  
-              border: '2px solid white',  
-              borderTopColor: 'transparent',  
-              borderRadius: '50%',  
-              margin: '0 auto',  
-              animation: 'spin 1s linear infinite',  
-            }}  
-          />  
+          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />  
         ) : (  
-          'Sign up'  
+          'Sign Up'  
         )}  
       </button>  
-  
-      <style jsx>{`  
-        @keyframes spin {  
-          from { transform: rotate(0deg); }  
-          to { transform: rotate(360deg); }  
-        }  
-  
-        input:focus {  
-          border-color: #4F46E5;  
-          box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);  
-        }  
-  
-        button:hover:not(:disabled) {  
-          background-color: #4338CA;  
-        }  
-  
-        input:disabled, button:disabled {  
-          opacity: 0.7;  
-          cursor: not-allowed;  
-        }  
-      `}</style>  
     </form>  
   );  
 }  

@@ -10,7 +10,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { title, content, description, excerpt, coverImage, tags, published, featured } = await req.json();
+    const { 
+      title, 
+      content, 
+      description, 
+      excerpt, 
+      coverImage, 
+      tags, 
+      published, 
+      featured,
+      seoTitle,
+      seoDescription,
+      seoKeywords
+    } = await req.json();
+
+    // Generate slug from title
+    const slug = title.toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+
+    // Calculate reading time (rough estimate: 200 words per minute)
+    const wordCount = content.split(/\s+/).filter((word: string) => word.length > 0).length;
+    const readingTime = Math.ceil(wordCount / 200);
 
     const newContent = await prisma.content.create({
       data: {
@@ -22,6 +43,11 @@ export async function POST(req: Request) {
         tags: tags || [],
         published: published || false,
         featured: featured || false,
+        seoTitle,
+        seoDescription,
+        seoKeywords: seoKeywords || [],
+        slug,
+        readingTime,
         author: {
           connect: { id: session.user.id }
         }
@@ -48,6 +74,14 @@ export async function GET(req: Request) {
     const contents = await prisma.content.findMany({
       where: {
         authorId: session.user.id
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
       },
       orderBy: {
         createdAt: 'desc'

@@ -2,11 +2,11 @@
 
 import LoginForm from '@/components/auth/LoginForm';
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -55,6 +55,15 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-cyan-100 flex items-center justify-center p-4">
+      {/* Back Button */}
+      <Link
+        href="/"
+        className="absolute top-4 left-4 flex items-center text-gray-600 hover:text-gray-800 transition-colors"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        <span className="text-sm font-medium">Back to Home</span>
+      </Link>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}  
         animate={{ opacity: 1, y: 0 }}  
@@ -71,12 +80,10 @@ export default function LoginPage() {
         <div className="px-6 py-8 sm:px-8">
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
-              <Image
-                src="/AILogo.jpeg"
+              <img
+                src="/AILogo.jpeg?v=1"
                 alt="Logo"
-                width={60}
-                height={60}
-                className="rounded-full"
+                className="w-15 h-15 rounded-full"
               />
             </div>
             <h2 className="text-2xl font-bold text-gray-800 mb-2">

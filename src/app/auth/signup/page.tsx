@@ -3,25 +3,39 @@
 import { motion } from 'framer-motion';  
 import SignupForm from '@/components/auth/SignupForm';  
 import Link from 'next/link';  
-import Image from 'next/image';  
+import { ArrowLeft } from 'lucide-react';
 
 export default function SignupPage() {  
   return (  
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-cyan-100 flex items-center justify-center p-4">  
+      {/* Back Button */}
+      <Link
+        href="/"
+        className="absolute top-4 left-4 flex items-center text-gray-600 hover:text-gray-800 transition-colors"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        <span className="text-sm font-medium">Back to Home</span>
+      </Link>
+
       <motion.div  
         initial={{ opacity: 0, y: 20 }}  
         animate={{ opacity: 1, y: 0 }}  
         transition={{ duration: 0.5 }}  
-        // className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden"  
+        style={{
+          background: 'white',
+          width: '100%',
+          maxWidth: '28rem',
+          borderRadius: '1rem',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+          overflow: 'hidden'
+        }}
       >  
         <div className="px-8 py-6">  
           <div className="text-center mb-8">  
-            <Image  
-              src="/AILogo.jpeg" // Add your logo  
+            <img
+              src="/AILogo.jpeg?v=1"
               alt="Logo"  
-              width={60}  
-              height={60}  
-              className="mx-auto mb-4"  
+              className="mx-auto mb-4 w-15 h-15 rounded-full"  
             />  
             <h2 className="text-2xl font-bold text-gray-800">Create an account</h2>  
             <p className="text-gray-600 mt-2">Join us today</p>  

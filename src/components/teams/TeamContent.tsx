@@ -1,7 +1,25 @@
 'use client';
 import { useState } from "react";
 
-export default function TeamsContent({ initialTeams }: any) {
+interface TeamMember {
+  id: number;
+  name: string;
+  role: string;
+  avatar: string;
+}
+
+interface Team {
+  id: number;
+  name: string;
+  description: string;
+  members: TeamMember[];
+}
+
+interface TeamContentProps {
+  initialTeams?: Team[];
+}
+
+export default function TeamsContent({ initialTeams }: TeamContentProps) {
     const [teams, setTeams] = useState([
       {
         id: 1,
@@ -21,12 +39,12 @@ export default function TeamsContent({ initialTeams }: any) {
         ]
       }
     ]);
-    const [showNewTeamModal, setShowNewTeamModal] = useState<any>(false);
-    const [showInviteModal, setShowInviteModal] = useState<any>(false);
-    const [selectedTeam, setSelectedTeam] = useState<any>(null);
-    const [loading, setLoading] = useState<any>(false);
+    const [showNewTeamModal, setShowNewTeamModal] = useState<boolean>(false);
+    const [showInviteModal, setShowInviteModal] = useState<boolean>(false);
+    const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
   
-    const handleCreateTeam = async (teamData:any) => {
+    const handleCreateTeam = async (teamData: { name: string; description: string }) => {
       setLoading(true);
       try {
         // API call simulation
@@ -44,7 +62,7 @@ export default function TeamsContent({ initialTeams }: any) {
       }
     };
   
-    const handleInviteMember = async (email:any, role:any, teamId:any) => {
+    const handleInviteMember = async (email: string, role: string, teamId: number) => {
       setLoading(true);
       try {
         // API call simulation
@@ -83,8 +101,8 @@ export default function TeamsContent({ initialTeams }: any) {
             e.preventDefault();
             const formData = new FormData(e.target as HTMLFormElement);
             handleCreateTeam({
-              name: formData.get('name'),
-              description: formData.get('description')
+              name: formData.get('name') as string,
+              description: formData.get('description') as string
             });
           }}>
             <div className="space-y-4">
@@ -141,11 +159,13 @@ export default function TeamsContent({ initialTeams }: any) {
           <form onSubmit={(e) => {
             e.preventDefault();
             const formData = new FormData(e.target as HTMLFormElement);
-            handleInviteMember(
-              formData.get('email'),
-              formData.get('role'),
-              selectedTeam.id
-            );
+            if (selectedTeam) {
+              handleInviteMember(
+                formData.get('email') as string,
+                formData.get('role') as string,
+                selectedTeam.id
+              );
+            }
           }}>
             <div className="space-y-4">
               <div>

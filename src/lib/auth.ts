@@ -58,17 +58,34 @@ export const authOptions: NextAuthOptions = {
     newUser: '/auth/signup',  
   },  
   callbacks: {  
-    async jwt({ token, user }) {  
+    async jwt({ token, user, trigger, session }) {  
       if (user) {   
         token.id = user.id;  
         token.role = user.role;  
+        token.name = user.name;
+        token.image = user.image;
+        token.bio = user.bio;
+        token.websiteUrl = user.websiteUrl;
       }  
+      
+      // Handle session updates
+      if (trigger === 'update' && session) {
+        token.name = session.user?.name;
+        token.image = session.user?.image;
+        token.bio = session.user?.bio;
+        token.websiteUrl = session.user?.websiteUrl;
+      }
+      
       return token;  
     },  
     async session({ session, token }) {  
       if (session.user) {  
         session.user.id = token.id as string;  
         session.user.role = token.role as 'USER' | 'ADMIN';  
+        session.user.name = token.name as string;
+        session.user.image = token.image as string;
+        session.user.bio = token.bio as string;
+        session.user.websiteUrl = token.websiteUrl as string;
       }  
       return session;  
     },  

@@ -30,6 +30,7 @@ model User {
   media         Media[]        
   documents     Document[]     
   events        Event[]        
+  notifications Notification[]
   role          Role      @default(USER)    
   accounts      Account[]    
   sessions      Session[]    
@@ -50,9 +51,17 @@ model Content {
   authorId    String   @db.ObjectId  
   author      User     @relation(fields: [authorId], references: [id])  
   tags        String[]
+  seoTitle    String?
+  seoDescription String?
+  seoKeywords String[]
+  slug        String?
+  views       Int       @default(0)
+  likes       Int       @default(0)
+  shares      Int       @default(0)
+  comments    Int       @default(0)
+  readingTime Int?      // in minutes
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  views       Int       @default(0)
 }  
   
 enum Role {  
@@ -103,6 +112,8 @@ model Media {
   thumbnail   String?  
   size        Int  
   format      String  
+  width       Int?     // Image/video width
+  height      Int?     // Image/video height
   createdAt   DateTime @default(now())  
   updatedAt   DateTime @updatedAt  
   userId      String   @db.ObjectId  
@@ -161,3 +172,16 @@ model TeamMember {
 
   @@unique([teamId, userId])  
 }  
+
+model Notification {  
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId  
+  type        String   // like, comment, share, view, system, team, content
+  title       String  
+  message     String  
+  isRead      Boolean  @default(false)  
+  data        Json?    // Additional data for the notification
+  userId      String   @db.ObjectId  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)  
+  createdAt   DateTime @default(now())  
+  updatedAt   DateTime @updatedAt  
+}

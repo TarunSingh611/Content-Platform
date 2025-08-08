@@ -3,16 +3,7 @@
 import { useState } from 'react'  
 import Image from 'next/image'  
 import { formatBytes } from '@/lib/utils'  
-
-interface MediaFile {  
-  id: string  
-  name: string  
-  url: string  
-  type: string  
-  size: number  
-  createdAt: string  
-  updatedAt: string  
-}  
+import { MediaFile } from '@/types/media'  
 
 interface MediaModalProps {  
   file: MediaFile  
@@ -47,9 +38,9 @@ export default function MediaModal({ file, onClose, onDelete }: MediaModalProps)
     }  
   }  
 
-  const isImage = file.type.startsWith('image/')  
-  const isVideo = file.type.startsWith('video/')  
-  const isPDF = file.type === 'application/pdf'  
+  const isImage = file.type === 'image'
+  const isVideo = file.type === 'video'
+  const isPDF = file.type === 'document'  
 
   return (  
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">  
@@ -72,12 +63,12 @@ export default function MediaModal({ file, onClose, onDelete }: MediaModalProps)
             <div className="border rounded-lg p-4 bg-gray-50 flex items-center justify-center">  
               {isImage && (  
                 <div className="relative w-full h-[300px]">  
-                  <Image  
-                    src={file.url}  
-                    alt={file.name}  
-                    fill  
-                    className="object-contain"  
-                  />  
+                                     <Image  
+                     src={file.url}  
+                     alt={file.title}  
+                     fill  
+                     className="object-contain"  
+                   />  
                 </div>  
               )}  
               {isVideo && (  
@@ -90,11 +81,11 @@ export default function MediaModal({ file, onClose, onDelete }: MediaModalProps)
                 </video>  
               )}  
               {isPDF && (  
-                <iframe  
-                  src={file.url}  
-                  className="w-full h-[300px]"  
-                  title={file.name}  
-                />  
+                                 <iframe  
+                   src={file.url}  
+                   className="w-full h-[300px]"  
+                   title={file.title}  
+                 />  
               )}  
               {!isImage && !isVideo && !isPDF && (  
                 <div className="text-center p-8">  
@@ -114,7 +105,7 @@ export default function MediaModal({ file, onClose, onDelete }: MediaModalProps)
                 <label className="block text-sm font-medium text-gray-700">  
                   File Name  
                 </label>  
-                <p className="mt-1 text-sm text-gray-900">{file.name}</p>  
+                                 <p className="mt-1 text-sm text-gray-900">{file.title}</p>  
               </div>  
               <div>  
                 <label className="block text-sm font-medium text-gray-700">  

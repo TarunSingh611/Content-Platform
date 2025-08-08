@@ -19,6 +19,14 @@ export async function GET(
         id: id,
         authorId: session.user.id // Ensure user can only access their own content
       },
+      include: {
+        author: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
     });
 
     if (!content) {
@@ -46,7 +54,19 @@ export async function PUT(
     }
 
     const { id } = await params;
-    const { title, content, description, excerpt, coverImage, tags, published, featured } = await req.json();
+    const { 
+      title, 
+      content, 
+      description, 
+      excerpt, 
+      coverImage, 
+      tags, 
+      published, 
+      featured,
+      seoTitle,
+      seoDescription,
+      seoKeywords
+    } = await req.json();
 
     const updatedContent = await prisma.content.update({
       where: { 
@@ -62,6 +82,9 @@ export async function PUT(
         tags: tags || [],
         published: published || false,
         featured: featured || false,
+        seoTitle,
+        seoDescription,
+        seoKeywords: seoKeywords || [],
       },
     });
 
