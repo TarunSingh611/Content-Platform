@@ -114,7 +114,7 @@ export default function AnalyticDashboard() {
   const fetchAnalytics = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/analytics?period=${period}`)
+      const response = await fetch(`/api/analytics?period=${period}&mode=basic`)
       if (response.ok) {
         const analyticsData = await response.json()
         setData(analyticsData)
@@ -181,31 +181,52 @@ export default function AnalyticDashboard() {
     ],
   }
 
-  // Chart data for tags
-  const tagsChartData = {
-    labels: topTags.length > 0 
-      ? topTags.map(item => item.tag)
-      : ['No tags'],
-    datasets: [
-      {
-        data: topTags.length > 0 
-          ? topTags.map(item => item.totalViews)
-          : [1],
-        backgroundColor: [
-          '#3B82F6',
-          '#10B981',
-          '#F59E0B',
-          '#EF4444',
-          '#8B5CF6',
-          '#06B6D4',
-          '#84CC16',
-          '#F97316',
-          '#EC4899',
-          '#6366F1',
+  // Chart data for tags (Top 10 + Others)
+  const tagsChartData = (() => {
+    if (topTags.length === 0) {
+      return {
+        labels: ['No tags'],
+        datasets: [
+          {
+            data: [1],
+            backgroundColor: ['#9CA3AF'],
+          },
         ],
-      },
-    ],
-  }
+      }
+    }
+
+    const sortedByViews = [...topTags].sort((a, b) => (b.totalViews ?? 0) - (a.totalViews ?? 0))
+    const topTen = sortedByViews.slice(0, 10)
+    const others = sortedByViews.slice(10)
+    const othersTotalViews = others.reduce((sum, t) => sum + (t.totalViews ?? 0), 0)
+
+    const labels = [...topTen.map(t => t.tag), ...(others.length ? ['Others'] : [])]
+    const data = [...topTen.map(t => t.totalViews), ...(others.length ? [othersTotalViews] : [])]
+
+    const baseColors = [
+      '#3B82F6',
+      '#10B981',
+      '#F59E0B',
+      '#EF4444',
+      '#8B5CF6',
+      '#06B6D4',
+      '#84CC16',
+      '#F97316',
+      '#EC4899',
+      '#6366F1',
+    ]
+    const backgroundColor = others.length ? [...baseColors, '#9CA3AF'] : baseColors
+
+    return {
+      labels,
+      datasets: [
+        {
+          data,
+          backgroundColor,
+        },
+      ],
+    }
+  })()
 
   const stats = [
     {
@@ -397,7 +418,7 @@ export default function AnalyticDashboard() {
         {/* Tags Chart */}
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-medium mb-4">Content by Tags</h3>
-          <div className="h-64">
+          <div className="h-5/6">
             <Doughnut
               data={tagsChartData}
               options={{

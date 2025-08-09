@@ -1,6 +1,6 @@
 // src/app/dashboard/analytics/page.tsx  
 import { redirect } from 'next/navigation'    
-import AnalyticDashboard from '@/components/AnalyticDashboard'  
+import AnalyticsOverview from '@/components/analytics/AnalyticsOverview'  
 import { getServerAuthSession } from '@/lib/auth-utils'
 import DemoRibbon from '@/components/ui/DemoRibbon';
 
@@ -22,8 +22,8 @@ export default async function AnalyticsPage() {
         <DemoRibbon message="Advanced Analytics - Coming Soon!" />
       </div>
 
-      {/* Main Analytics Dashboard */}
-      <AnalyticDashboard />
+      {/* Main Analytics Overview (advanced) */}
+      <AnalyticsOverview />
 
       {/* Upcoming Features */}
       <div className="bg-white rounded-lg shadow p-6">

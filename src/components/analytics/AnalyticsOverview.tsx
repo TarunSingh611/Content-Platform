@@ -91,6 +91,23 @@ interface AnalyticsData {
     mostPopularContentType: string
     avgReadingTime: number
   }
+  reactionsSummary: {
+    upvotes: number
+    downvotes: number
+    favorites: number
+    bookmarks: number
+  }
+  ratingSummary: {
+    average: number
+    count: number
+  }
+  dailyReactions: Array<{
+    date: string
+    upvotes: number
+    downvotes: number
+    favorites: number
+    bookmarks: number
+  }>
 }
 
 export default function AnalyticsOverview() {
@@ -105,7 +122,7 @@ export default function AnalyticsOverview() {
   const fetchAnalytics = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/analytics?period=${period}`)
+      const response = await fetch(`/api/analytics?period=${period}&mode=advanced`)
       if (response.ok) {
         const analyticsData = await response.json()
         setData(analyticsData)
@@ -133,7 +150,7 @@ export default function AnalyticsOverview() {
     )
   }
 
-  const { overview, dailyViews, topContent, topTags, engagementTrends, audienceInsights, performanceInsights } = data
+  const { overview, dailyViews, topContent, topTags, engagementTrends, audienceInsights, performanceInsights, reactionsSummary, ratingSummary, dailyReactions } = data
 
   // Chart data for daily views
   const viewsChartData = {
@@ -146,8 +163,8 @@ export default function AnalyticsOverview() {
         data: dailyViews.length > 0 
           ? dailyViews.map(item => item.views)
           : [0],
-        borderColor: 'rgb(99, 102, 241)',
         backgroundColor: 'rgba(99, 102, 241, 0.1)',
+        borderColor: 'rgb(99, 102, 241)',
         tension: 0.4,
       },
     ],
@@ -169,31 +186,52 @@ export default function AnalyticsOverview() {
     ],
   }
 
-  // Chart data for tags
-  const tagsChartData = {
-    labels: topTags.length > 0 
-      ? topTags.map(item => item.tag)
-      : ['No tags'],
-    datasets: [
-      {
-        data: topTags.length > 0 
-          ? topTags.map(item => item.totalViews)
-          : [1],
-        backgroundColor: [
-          '#3B82F6',
-          '#10B981',
-          '#F59E0B',
-          '#EF4444',
-          '#8B5CF6',
-          '#06B6D4',
-          '#84CC16',
-          '#F97316',
-          '#EC4899',
-          '#6366F1',
+  // Chart data for tags (Top 10 + Others)
+  const tagsChartData = (() => {
+    if (topTags.length === 0) {
+      return {
+        labels: ['No tags'],
+        datasets: [
+          {
+            data: [1],
+            backgroundColor: ['#9CA3AF'],
+          },
         ],
-      },
-    ],
-  }
+      }
+    }
+
+    const sortedByViews = [...topTags].sort((a, b) => (b.totalViews ?? 0) - (a.totalViews ?? 0))
+    const topTen = sortedByViews.slice(0, 10)
+    const others = sortedByViews.slice(10)
+    const othersTotalViews = others.reduce((sum, t) => sum + (t.totalViews ?? 0), 0)
+
+    const labels = [...topTen.map(t => t.tag), ...(others.length ? ['Others'] : [])]
+    const data = [...topTen.map(t => t.totalViews), ...(others.length ? [othersTotalViews] : [])]
+
+    const baseColors = [
+      '#3B82F6',
+      '#10B981',
+      '#F59E0B',
+      '#EF4444',
+      '#8B5CF6',
+      '#06B6D4',
+      '#84CC16',
+      '#F97316',
+      '#EC4899',
+      '#6366F1',
+    ]
+    const backgroundColor = others.length ? [...baseColors, '#9CA3AF'] : baseColors
+
+    return {
+      labels,
+      datasets: [
+        {
+          data,
+          backgroundColor,
+        },
+      ],
+    }
+  })()
 
   // Engagement trends chart
   const engagementChartData = {
@@ -214,6 +252,39 @@ export default function AnalyticsOverview() {
     ],
   }
 
+  // Daily reactions chart (stacked bars)
+  const reactionsChartData = {
+    labels: dailyReactions.length > 0
+      ? dailyReactions.map(r => new Date(r.date).toLocaleDateString())
+      : ['No data'],
+    datasets: [
+      {
+        label: 'Upvotes',
+        data: dailyReactions.length > 0 ? dailyReactions.map(r => r.upvotes) : [0],
+        backgroundColor: 'rgba(34,197,94,0.7)',
+        borderColor: 'rgb(34,197,94)'
+      },
+      {
+        label: 'Downvotes',
+        data: dailyReactions.length > 0 ? dailyReactions.map(r => r.downvotes) : [0],
+        backgroundColor: 'rgba(239,68,68,0.7)',
+        borderColor: 'rgb(239,68,68)'
+      },
+      {
+        label: 'Favorites',
+        data: dailyReactions.length > 0 ? dailyReactions.map(r => r.favorites) : [0],
+        backgroundColor: 'rgba(99,102,241,0.7)',
+        borderColor: 'rgb(99,102,241)'
+      },
+      {
+        label: 'Bookmarks',
+        data: dailyReactions.length > 0 ? dailyReactions.map(r => r.bookmarks) : [0],
+        backgroundColor: 'rgba(234,179,8,0.7)',
+        borderColor: 'rgb(234,179,8)'
+      },
+    ],
+  }
+
   const stats = [
     {
       name: 'Total Views',
@@ -223,9 +294,9 @@ export default function AnalyticsOverview() {
       changeType: overview.growthRate >= 0 ? 'increase' : 'decrease',
     },
     {
-      name: 'Total Likes',
-      value: overview.totalLikes.toLocaleString(),
-      icon: HeartIcon,
+      name: 'Upvotes',
+      value: reactionsSummary.upvotes.toLocaleString(),
+      icon: ArrowUpIcon,
       change: 12.5,
       changeType: 'increase',
     },
@@ -258,6 +329,22 @@ export default function AnalyticsOverview() {
       changeType: 'neutral',
     },
   ]
+
+  // Derived tag insights: avg views/post per tag
+  const tagAverages = topTags.map(t => ({ tag: t.tag, avg: t.count ? Math.round((t.totalViews / t.count) * 10) / 10 : 0 }))
+  const topTagAverage = tagAverages.sort((a, b) => b.avg - a.avg)[0]
+
+  // Derived overall save rate from reactions and views
+  const overallSaveRate = overview.totalViews > 0
+    ? Math.round(((reactionsSummary.favorites + reactionsSummary.bookmarks) / overview.totalViews) * 1000) / 10
+    : 0
+
+  // Identify low-engagement candidates among high-view posts
+  const lowEngagementCandidates = [...data.contentPerformance]
+    .sort((a, b) => b.views - a.views)
+    .slice(0, 10)
+    .sort((a, b) => a.engagement - b.engagement)
+    .slice(0, 3)
 
   return (
     <div className="space-y-6">
@@ -305,6 +392,28 @@ export default function AnalyticsOverview() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Quick Insights Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-lg shadow p-4">
+          <p className="text-sm text-gray-600">Best Day</p>
+          <p className="text-lg font-semibold">{performanceInsights.bestDay}</p>
+          <p className="text-xs text-gray-500">{performanceInsights.bestDayEngagement}% engagement</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4">
+          <p className="text-sm text-gray-600">Peak Hours</p>
+          <p className="text-lg font-semibold">{performanceInsights.peakHours}</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4">
+          <p className="text-sm text-gray-600">Top Tag (avg views)</p>
+          <p className="text-lg font-semibold">{topTagAverage ? `${topTagAverage.tag} · ${topTagAverage.avg}` : 'N/A'}</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4">
+          <p className="text-sm text-gray-600">Rating</p>
+          <p className="text-lg font-semibold">{ratingSummary.average.toFixed(1)} / 5</p>
+          <p className="text-xs text-gray-500">{ratingSummary.count} votes</p>
+        </div>
       </div>
 
       {/* Charts Grid */}
@@ -359,6 +468,45 @@ export default function AnalyticsOverview() {
         </div>
       </div>
 
+      {/* Reactions Summary */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-lg font-medium mb-4">Audience Reactions</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-gray-50 rounded p-4">
+            <p className="text-sm text-gray-600">Upvotes</p>
+            <p className="text-xl font-semibold">{reactionsSummary.upvotes.toLocaleString()}</p>
+          </div>
+          <div className="bg-gray-50 rounded p-4">
+            <p className="text-sm text-gray-600">Downvotes</p>
+            <p className="text-xl font-semibold">{reactionsSummary.downvotes.toLocaleString()}</p>
+          </div>
+          <div className="bg-gray-50 rounded p-4">
+            <p className="text-sm text-gray-600">Favorites</p>
+            <p className="text-xl font-semibold">{reactionsSummary.favorites.toLocaleString()}</p>
+          </div>
+          <div className="bg-gray-50 rounded p-4">
+            <p className="text-sm text-gray-600">Bookmarks</p>
+            <p className="text-xl font-semibold">{reactionsSummary.bookmarks.toLocaleString()}</p>
+          </div>
+        </div>
+        <div className="h-72">
+          <Bar
+            data={reactionsChartData}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: 'bottom' },
+              },
+              scales: {
+                x: { stacked: true },
+                y: { stacked: true, beginAtZero: true },
+              },
+            }}
+          />
+        </div>
+      </div>
+
       {/* Top Content and Tags */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Content List */}
@@ -372,8 +520,8 @@ export default function AnalyticsOverview() {
                     <span className="text-lg font-bold text-indigo-600 mr-3">#{index + 1}</span>
                     <div>
                       <p className="font-medium text-gray-900">{content.title}</p>
-                      <p className="text-sm text-gray-500">
-                        {new Date(content.createdAt).toLocaleDateString()}
+                      <p className="text-xs text-gray-500">
+                        {new Date(content.createdAt).toLocaleDateString()} · {data.contentPerformance.find(c => c.id === content.id)?.engagement ?? 0}% engagement
                       </p>
                     </div>
                   </div>
@@ -394,7 +542,7 @@ export default function AnalyticsOverview() {
         {/* Tags Chart */}
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-medium mb-4">Content by Tags</h3>
-          <div className="h-64">
+          <div className="h-5/6">
             <Doughnut
               data={tagsChartData}
               options={{
@@ -409,6 +557,24 @@ export default function AnalyticsOverview() {
             />
           </div>
         </div>
+      </div>
+
+      {/* Actionable Insights */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold mb-4">Actionable Insights</h3>
+        <ul className="list-disc pl-6 space-y-2 text-sm text-gray-700">
+          <li>
+            Overall save rate (favorites + bookmarks): <span className="font-semibold">{overallSaveRate}%</span>
+          </li>
+          <li>
+            Best performing tag by avg views/post: <span className="font-semibold">{topTagAverage ? `${topTagAverage.tag} (${topTagAverage.avg})` : 'N/A'}</span>
+          </li>
+          {lowEngagementCandidates.map((c) => (
+            <li key={c.id}>
+              Consider updating <span className="font-semibold">{c.title}</span>: {c.views.toLocaleString()} views but low engagement at {c.engagement}%
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* Performance Insights */}

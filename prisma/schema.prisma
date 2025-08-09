@@ -37,6 +37,11 @@ model User {
   emailVerified DateTime?
   passwordResetTokens PasswordResetToken[]
   teamMembers   TeamMember[] 
+  // New inverse relations
+  comments      Comment[]
+  reactions     Reaction[]
+  ratings       Rating[]
+  bookmarks     Bookmark[]
 }    
 
 model Content {  
@@ -62,6 +67,13 @@ model Content {
   readingTime Int?      // in minutes
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  // New relations for richer analytics and interactions
+  commentsList Comment[]
+  reactions     Reaction[]
+  ratings       Rating[]
+  bookmarks     Bookmark[]
+  analytics     AnalyticsDaily[]
 }  
   
 enum Role {  
@@ -184,4 +196,94 @@ model Notification {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)  
   createdAt   DateTime @default(now())  
   updatedAt   DateTime @updatedAt  
+}
+
+// New models for comments, reactions, ratings, bookmarks, and daily analytics
+
+enum ReactionType {
+  UPVOTE
+  DOWNVOTE
+  FAVORITE
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  text      String
+  contentId String   @db.ObjectId
+  content   Content  @relation(fields: [contentId], references: [id])
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  parentId  String?  @db.ObjectId
+  parent    Comment? @relation("CommentToReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies   Comment[] @relation("CommentToReplies")
+  createdAt DateTime @default(now())
+
+  @@index([contentId])
+  @@index([userId])
+}
+
+model Reaction {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  type      ReactionType
+  contentId String       @db.ObjectId
+  content   Content      @relation(fields: [contentId], references: [id])
+  userId    String       @db.ObjectId
+  user      User         @relation(fields: [userId], references: [id])
+  createdAt DateTime     @default(now())
+
+  @@unique([contentId, userId, type])
+  @@index([contentId, type])
+  @@index([userId, type])
+}
+
+model Rating {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  value     Int      // 1..5
+  contentId String   @db.ObjectId
+  content   Content  @relation(fields: [contentId], references: [id])
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([contentId, userId])
+  @@index([contentId])
+  @@index([userId])
+}
+
+model Bookmark {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  contentId String   @db.ObjectId
+  content   Content  @relation(fields: [contentId], references: [id])
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([contentId, userId])
+  @@index([contentId])
+  @@index([userId])
+}
+
+model AnalyticsDaily {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  contentId            String   @db.ObjectId
+  content              Content  @relation(fields: [contentId], references: [id])
+  day                  DateTime // UTC midnight for the day
+  views                Int      @default(0)
+  uniqueUsers          Int      @default(0)
+  upvotes              Int      @default(0)
+  downvotes            Int      @default(0)
+  bookmarks            Int      @default(0)
+  favorites            Int      @default(0)
+  totalTimeMs          Int      @default(0) // running sum for avg
+  timeSamples          Int      @default(0)
+  p50TimeMs            Int?
+  p90TimeMs            Int?
+  tagsSnapshot         String[]
+  recentNextContentIds String[]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@unique([contentId, day])
+  @@index([day])
 }

@@ -54,19 +54,22 @@ export async function PUT(
     }
 
     const { id } = await params;
-    const { 
-      title, 
-      content, 
-      description, 
-      excerpt, 
-      coverImage, 
-      tags, 
-      published, 
+    const {
+      title,
+      content,
+      description,
+      excerpt,
+      coverImage,
+      tags,
+      published,
       featured,
       seoTitle,
       seoDescription,
-      seoKeywords
+      seoKeywords,
     } = await req.json();
+
+    const coerceToBoolean = (value: unknown): boolean =>
+      value === true || value === 'true' || value === 1 || value === '1';
 
     const updatedContent = await prisma.content.update({
       where: { 
@@ -79,12 +82,12 @@ export async function PUT(
         description,
         excerpt,
         coverImage,
-        tags: tags || [],
-        published: published || false,
-        featured: featured || false,
+        tags: Array.isArray(tags) ? tags : [],
+        published: coerceToBoolean(published),
+        featured: coerceToBoolean(featured),
         seoTitle,
         seoDescription,
-        seoKeywords: seoKeywords || [],
+        seoKeywords: Array.isArray(seoKeywords) ? seoKeywords : [],
       },
     });
 

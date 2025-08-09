@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:db": "ts-node scripts/test-connection.ts"
+    "test:db": "ts-node scripts/test-connection.ts",
+    "fix:featured": "ts-node scripts/fix-featured-boolean.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",
