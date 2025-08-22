@@ -1,4 +1,6 @@
-# AI Content Platform with Real-time Messaging
+# AI Content Platform - Travel, Recipes & Task Management
+
+A comprehensive AI-powered platform featuring travel planning, recipe generation, and intelligent task prioritization. Built with modern web technologies and Google's Gemini AI for smart content generation and decision-making.
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.0.4-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.0.0-blue?style=for-the-badge&logo=react)](https://reactjs.org/)
@@ -19,16 +21,21 @@
 [![Code Size](https://img.shields.io/github/languages/code-size/TarunSingh611/Content-Platform)](https://github.com/TarunSingh611/Content-Platform)
 [![Repo Size](https://img.shields.io/github/repo-size/TarunSingh611/Content-Platform)](https://github.com/TarunSingh611/Content-Platform)
 
+[![GitHub Stats](https://github-readme-stats.vercel.app/api?username=TarunSingh611&show_icons=true&theme=radical)](https://github.com/TarunSingh611)
+[![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=TarunSingh611&layout=compact&theme=radical)](https://github.com/TarunSingh611)
+[![GitHub Streak](https://streak-stats.demolab.com/?user=TarunSingh611&theme=radical)](https://git.io/streak-stats)
+
+[![Profile Views](https://komarev.com/ghpvc/?username=TarunSingh611&color=brightgreen)](https://github.com/TarunSingh611)
+[![Repository Views](https://komarev.com/ghpvc/?username=TarunSingh611&repo=Content-Platform&color=blue)](https://github.com/TarunSingh611/Content-Platform)
+
 ## 🚀 Features
 
-### ✨ Real-time Messaging System
-- **WebSocket Integration**: Real-time messaging using Socket.io
-- **Group & Direct Chats**: Support for both group conversations and 1-on-1 messaging
-- **Typing Indicators**: See when someone is typing
-- **Message Editing**: Edit your own messages
-- **Message Deletion**: Soft delete messages with proper permissions
-- **Read Receipts**: Track message read status
-- **Conversation Management**: Create, join, and manage conversations
+### ✨ AI-Powered Features
+- **Travel Planning**: AI-assisted travel itinerary generation and recommendations
+- **Recipe Generation**: Smart recipe creation with ingredient suggestions
+- **Task Prioritization**: Intelligent task management and prioritization
+- **Content Generation**: AI-powered content creation using Google's Gemini AI
+- **Smart Recommendations**: Personalized suggestions based on user preferences
 
 ### 🎯 Core Platform Features
 - **Content Management**: Create, edit, and publish content
@@ -38,6 +45,7 @@
 - **User Authentication**: Secure authentication with NextAuth.js
 - **Team Collaboration**: Team management and collaboration tools
 - **Calendar Integration**: Event management and scheduling
+- **Real-time Messaging**: WebSocket-based communication system
 
 ## 🏗️ Architecture
 
@@ -142,6 +150,11 @@
 
 ## 🚀 Deployment
 
+### Live Demo
+- **Platform**: [content-platform-pink.vercel.app](https://content-platform-pink.vercel.app)
+- **Documentation**: [DEMO_GUIDE.md](./DEMO_GUIDE.md)
+
+
 ### Main App (Vercel)
 1. Push your code to GitHub
 2. Connect to Vercel
@@ -158,26 +171,31 @@ Choose from multiple deployment options:
 
 For detailed deployment instructions, see [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
 
-## 📱 Messaging Features
+## 📱 Platform Features
+
+### AI-Powered Travel Planning
+- **Smart Itineraries**: AI-generated travel plans and recommendations
+- **Destination Insights**: Intelligent destination suggestions
+- **Budget Optimization**: Smart budget planning and cost analysis
+- **Travel Tips**: AI-powered travel advice and tips
+
+### Recipe Generation & Management
+- **AI Recipe Creation**: Generate recipes based on available ingredients
+- **Ingredient Suggestions**: Smart ingredient recommendations
+- **Nutritional Analysis**: AI-powered nutritional information
+- **Recipe Collections**: Organize and manage recipe collections
+
+### Task Management & Prioritization
+- **Intelligent Prioritization**: AI-powered task ranking
+- **Smart Scheduling**: Optimal task scheduling recommendations
+- **Progress Tracking**: Real-time progress monitoring
+- **Collaborative Tasks**: Team-based task management
 
 ### Real-time Communication
 - **Instant Messaging**: Messages appear in real-time
 - **Typing Indicators**: See when someone is typing
 - **Online Status**: Track user online/offline status
 - **Message History**: Persistent message storage
-
-### Conversation Management
-- **Direct Messages**: 1-on-1 conversations
-- **Group Chats**: Multi-user conversations
-- **Conversation Search**: Find conversations quickly
-- **User Search**: Find users to start conversations
-
-### Message Features
-- **Text Messages**: Rich text support
-- **Message Editing**: Edit your own messages
-- **Message Deletion**: Soft delete with permissions
-- **Read Receipts**: Track message read status
-- **File Attachments**: Support for images, documents
 
 ## 🔧 API Endpoints
 
@@ -293,8 +311,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Documentation**: [QUICK_START.md](./QUICK_START.md)
+- **Documentation**: [DEMO_GUIDE.md](./DEMO_GUIDE.md)
 - **Deployment**: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
+- **Portfolio**: [PORTFOLIO_SUMMARY.md](./PORTFOLIO_SUMMARY.md)
 - **Issues**: [GitHub Issues](https://github.com/TarunSingh611/Content-Platform/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/TarunSingh611/Content-Platform/discussions)
 
