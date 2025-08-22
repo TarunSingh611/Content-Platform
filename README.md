@@ -9,15 +9,15 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.1-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/ai-content-platform?style=social)](https://github.com/yourusername/ai-content-platform/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/yourusername/ai-content-platform?style=social)](https://github.com/yourusername/ai-content-platform/network)
-[![GitHub issues](https://img.shields.io/github/issues/yourusername/ai-content-platform)](https://github.com/yourusername/ai-content-platform/issues)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/ai-content-platform)](https://github.com/yourusername/ai-content-platform/pulls)
-[![GitHub license](https://img.shields.io/github/license/yourusername/ai-content-platform)](https://github.com/yourusername/ai-content-platform/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/TarunSingh611/Content-Platform?style=social)](https://github.com/TarunSingh611/Content-Platform/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/TarunSingh611/Content-Platform?style=social)](https://github.com/TarunSingh611/Content-Platform/network)
+[![GitHub issues](https://img.shields.io/github/issues/TarunSingh611/Content-Platform)](https://github.com/TarunSingh611/Content-Platform/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/TarunSingh611/Content-Platform)](https://github.com/TarunSingh611/Content-Platform/pulls)
+[![GitHub license](https://img.shields.io/github/license/TarunSingh611/Content-Platform)](https://github.com/TarunSingh611/Content-Platform/blob/main/LICENSE)
 
-[![Lines of Code](https://img.shields.io/tokei/lines/github/yourusername/ai-content-platform)](https://github.com/yourusername/ai-content-platform)
-[![Code Size](https://img.shields.io/github/languages/code-size/yourusername/ai-content-platform)](https://github.com/yourusername/ai-content-platform)
-[![Repo Size](https://img.shields.io/github/repo-size/yourusername/ai-content-platform)](https://github.com/yourusername/ai-content-platform)
+[![Lines of Code](https://img.shields.io/tokei/lines/github/TarunSingh611/Content-Platform)](https://github.com/TarunSingh611/Content-Platform)
+[![Code Size](https://img.shields.io/github/languages/code-size/TarunSingh611/Content-Platform)](https://github.com/TarunSingh611/Content-Platform)
+[![Repo Size](https://img.shields.io/github/repo-size/TarunSingh611/Content-Platform)](https://github.com/TarunSingh611/Content-Platform)
 
 ## 🚀 Features
 
@@ -87,8 +87,8 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/ai-content-platform.git
-   cd ai-content-platform
+   git clone https://github.com/TarunSingh611/Content-Platform.git
+   cd Content-Platform
    ```
 
 2. **Install dependencies**
@@ -295,17 +295,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Documentation**: [QUICK_START.md](./QUICK_START.md)
 - **Deployment**: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/ai-content-platform/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/ai-content-platform/discussions)
+- **Issues**: [GitHub Issues](https://github.com/TarunSingh611/Content-Platform/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/TarunSingh611/Content-Platform/discussions)
 
 ## 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/ai-content-platform&type=Date)](https://star-history.com/#yourusername/ai-content-platform&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=TarunSingh611/Content-Platform&type=Date)](https://star-history.com/#TarunSingh611/Content-Platform&Date)
 
 ---
 
-**Made with ❤️ by [Your Name]**
+**Made with ❤️ by Tarun Singh**
 
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yourusername)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/yourusername)
-[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/yourusername)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/TarunSingh611)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/tarunsingh611)
+[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/TarunSingh611)
