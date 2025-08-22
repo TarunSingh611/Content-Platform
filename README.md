@@ -1,156 +1,311 @@
-# AI Content Platform & Blog Ecosystem
+# AI Content Platform with Real-time Messaging
 
-A comprehensive content management system with AI-powered features and a connected blog platform.
+[![Next.js](https://img.shields.io/badge/Next.js-15.0.4-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.0.0-blue?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7.2-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-6.1.0-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-4.4+-green?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
+[![Socket.io](https://img.shields.io/badge/Socket.io-4.8.1-010101?style=for-the-badge&logo=socket.io)](https://socket.io/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.1-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
-## 🌟 Project Overview
+[![GitHub stars](https://img.shields.io/github/stars/yourusername/ai-content-platform?style=social)](https://github.com/yourusername/ai-content-platform/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/yourusername/ai-content-platform?style=social)](https://github.com/yourusername/ai-content-platform/network)
+[![GitHub issues](https://img.shields.io/github/issues/yourusername/ai-content-platform)](https://github.com/yourusername/ai-content-platform/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/ai-content-platform)](https://github.com/yourusername/ai-content-platform/pulls)
+[![GitHub license](https://img.shields.io/github/license/yourusername/ai-content-platform)](https://github.com/yourusername/ai-content-platform/blob/main/LICENSE)
 
-This is a full-stack content management ecosystem consisting of:
+[![Lines of Code](https://img.shields.io/tokei/lines/github/yourusername/ai-content-platform)](https://github.com/yourusername/ai-content-platform)
+[![Code Size](https://img.shields.io/github/languages/code-size/yourusername/ai-content-platform)](https://github.com/yourusername/ai-content-platform)
+[![Repo Size](https://img.shields.io/github/repo-size/yourusername/ai-content-platform)](https://github.com/yourusername/ai-content-platform)
 
-### 1. **AI Content Platform** (This Repository)
-- **Live Demo**: [AI Content Platform](https://your-ai-platform-url.com)
-- **Tech Stack**: Next.js 15, TypeScript, Prisma, NextAuth, AI Integration
-- **Features**: Content creation, analytics, collaboration, media management
+## 🚀 Features
 
-### 2. **Connected Blog Site** 
-- **Live Demo**: [BloggED Blog](https://blogg-ed.vercel.app/)
-- **Purpose**: Showcases content created through the AI platform
-- **Features**: Modern blog interface, responsive design, content management
+### ✨ Real-time Messaging System
+- **WebSocket Integration**: Real-time messaging using Socket.io
+- **Group & Direct Chats**: Support for both group conversations and 1-on-1 messaging
+- **Typing Indicators**: See when someone is typing
+- **Message Editing**: Edit your own messages
+- **Message Deletion**: Soft delete messages with proper permissions
+- **Read Receipts**: Track message read status
+- **Conversation Management**: Create, join, and manage conversations
 
-## 🚀 Key Features
+### 🎯 Core Platform Features
+- **Content Management**: Create, edit, and publish content
+- **Rich Text Editor**: Advanced editor with TipTap
+- **Media Management**: Upload and manage images, videos, documents
+- **Analytics Dashboard**: Track content performance and engagement
+- **User Authentication**: Secure authentication with NextAuth.js
+- **Team Collaboration**: Team management and collaboration tools
+- **Calendar Integration**: Event management and scheduling
 
-### AI Content Platform
-- 🤖 **AI-Powered Content Creation** - Generate content using Google's Generative AI
-- 📊 **Analytics Dashboard** - Real-time content performance tracking
-- 👥 **Team Collaboration** - Real-time collaborative editing with Y.js
-- 📁 **Media Management** - Upload and organize media files
-- 📅 **Calendar Integration** - Schedule and manage content
-- 🔐 **Authentication** - Secure user management with NextAuth
-- 📱 **Responsive Design** - Works seamlessly across all devices
+## 🏗️ Architecture
 
-### Connected Blog Site
-- 📝 **Content Display** - Showcases articles created through the platform
-- 🎨 **Modern UI** - Clean, professional blog design
-- 📱 **Mobile Responsive** - Optimized for all screen sizes
-- ⚡ **Fast Performance** - Built with Next.js for optimal speed
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Next.js App   │    │  WebSocket       │    │   MongoDB       │
+│   (Vercel)      │◄──►│  Server          │◄──►│   Database      │
+│   Frontend      │    │  (Separate)      │    │   (Atlas)       │
+│   + API Routes  │    │  Real-time       │    │                 │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
 
-## 🛠️ Technology Stack
+## 🛠️ Tech Stack
 
 ### Frontend
 - **Next.js 15** - React framework with App Router
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first styling
-- **Framer Motion** - Smooth animations
-- **React Hook Form** - Form management
-- **Zod** - Schema validation
+- **React 19** - UI library
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Utility-first CSS framework
+- **Socket.io Client** - Real-time communication
 
-### Backend & Database
-- **Prisma** - Type-safe database ORM
-- **NextAuth.js** - Authentication system
-- **PostgreSQL** - Primary database
-- **Firebase** - File storage and real-time features
+### Backend
+- **Next.js API Routes** - Serverless API endpoints
+- **Prisma ORM** - Database toolkit
+- **MongoDB** - NoSQL database
+- **NextAuth.js** - Authentication solution
 
-### AI & Analytics
-- **Google Generative AI** - Content generation
-- **Chart.js** - Data visualization
-- **Socket.io** - Real-time communication
+### Real-time Server
+- **Express.js** - Web framework
+- **Socket.io** - Real-time WebSocket library
+- **CORS** - Cross-origin resource sharing
+- **Node.js** - JavaScript runtime
 
-### Collaboration
-- **Y.js** - Real-time collaborative editing
-- **WebRTC** - Peer-to-peer communication
+### Development Tools
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **Prisma Studio** - Database GUI
 
-## 🚀 Getting Started
+## 📦 Installation
 
 ### Prerequisites
-- Node.js 18+ 
-- PostgreSQL database
-- Google AI API key
-- Firebase project
+- Node.js 18+
+- MongoDB database (Atlas recommended)
+- Git
 
-### Installation
+### Quick Start
 
 1. **Clone the repository**
-```bash
-git clone https://github.com/yourusername/ai-content-platform.git
-cd ai-content-platform
-```
+   ```bash
+   git clone https://github.com/yourusername/ai-content-platform.git
+   cd ai-content-platform
+   ```
 
 2. **Install dependencies**
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 3. **Set up environment variables**
-```bash
-cp .env.example .env.local
-```
+   ```bash
+   cp .env.example .env.local
+   ```
 
-4. **Configure your environment variables**
-```env
-DATABASE_URL="your-postgresql-url"
-NEXTAUTH_SECRET="your-nextauth-secret"
-GOOGLE_AI_API_KEY="your-google-ai-key"
-FIREBASE_PROJECT_ID="your-firebase-project"
-```
+4. **Configure your environment**
+   ```env
+   # Database
+   DATABASE_URL="your_mongodb_connection_string"
+   
+   # Authentication
+   NEXTAUTH_SECRET="your-secret-key"
+   NEXTAUTH_URL="http://localhost:3000"
+   
+   # WebSocket Server
+   NEXT_PUBLIC_WEBSOCKET_URL="http://localhost:3001"
+   ```
 
 5. **Set up the database**
-```bash
-npx prisma generate
-npx prisma db push
-```
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
 
-6. **Run the development server**
-```bash
-npm run dev
-```
+6. **Start the WebSocket server**
+   ```bash
+   cd websocket-server
+   npm install
+   cp env.example .env
+   # Update .env with your database URL
+   npm run dev
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the AI Content Platform.
+7. **Start the main application**
+   ```bash
+   # In another terminal, from the root directory
+   npm run dev
+   ```
 
-## 📊 Project Architecture
+8. **Visit the application**
+   ```
+   http://localhost:3000
+   ```
 
-```
-ai-content-platform/
-├── src/
-│   ├── app/                 # Next.js App Router
-│   │   ├── api/            # API routes
-│   │   ├── dashboard/      # Dashboard pages
-│   │   └── auth/          # Authentication pages
-│   ├── components/         # Reusable components
-│   ├── lib/               # Utility functions
-│   └── types/             # TypeScript definitions
-├── prisma/                # Database schema
-└── public/               # Static assets
-```
+## 🚀 Deployment
 
-## 🔗 Connected Projects
+### Main App (Vercel)
+1. Push your code to GitHub
+2. Connect to Vercel
+3. Set environment variables
+4. Deploy
 
-- **Blog Site**: [https://blogg-ed.vercel.app/](https://blogg-ed.vercel.app/)
-- **GitHub Repository**: [Your Repository URL]
-- **Live Demo**: [Your Platform URL]
+### WebSocket Server
+Choose from multiple deployment options:
 
-## 🎯 Key Achievements
+- **Railway** (Recommended) - Easy deployment, $5/month
+- **Render** - Free tier available
+- **DigitalOcean** - $5/month
+- **AWS EC2** - Pay per use
 
-- ✅ **Full-Stack Development** - Complete frontend and backend implementation
-- ✅ **AI Integration** - Real-time content generation capabilities
-- ✅ **Real-time Collaboration** - Multi-user editing with conflict resolution
-- ✅ **Modern Architecture** - Type-safe, scalable codebase
-- ✅ **Production Ready** - Deployed and fully functional
-- ✅ **Connected Ecosystem** - Blog site showcases platform capabilities
+For detailed deployment instructions, see [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
 
-## 📈 Performance Features
+## 📱 Messaging Features
 
-- **SEO Optimized** - Built with Next.js for excellent search engine performance
-- **Fast Loading** - Optimized images and code splitting
-- **Mobile First** - Responsive design for all devices
-- **Accessibility** - WCAG compliant components
+### Real-time Communication
+- **Instant Messaging**: Messages appear in real-time
+- **Typing Indicators**: See when someone is typing
+- **Online Status**: Track user online/offline status
+- **Message History**: Persistent message storage
+
+### Conversation Management
+- **Direct Messages**: 1-on-1 conversations
+- **Group Chats**: Multi-user conversations
+- **Conversation Search**: Find conversations quickly
+- **User Search**: Find users to start conversations
+
+### Message Features
+- **Text Messages**: Rich text support
+- **Message Editing**: Edit your own messages
+- **Message Deletion**: Soft delete with permissions
+- **Read Receipts**: Track message read status
+- **File Attachments**: Support for images, documents
+
+## 🔧 API Endpoints
+
+### Conversations
+- `GET /api/conversations` - Get user conversations
+- `POST /api/conversations` - Create new conversation
+- `GET /api/conversations/[id]` - Get conversation details
+- `PUT /api/conversations/[id]` - Update conversation
+- `DELETE /api/conversations/[id]` - Delete conversation
+
+### Messages
+- `GET /api/messages` - Get conversation messages
+- `POST /api/messages` - Send new message
+- `PUT /api/messages/[id]` - Edit message
+- `DELETE /api/messages/[id]` - Delete message
+
+### Users
+- `GET /api/users/search` - Search users
+
+## 🗄️ Database Schema
+
+### Core Models
+- **User** - User accounts and profiles
+- **Conversation** - Chat conversations
+- **ConversationParticipant** - User participation in conversations
+- **Message** - Individual messages
+- **Content** - Platform content
+- **Media** - Uploaded files
+
+### Key Features
+- **Soft Deletion** - Messages are soft deleted
+- **Audit Trail** - Track message edits and deletions
+- **Permissions** - Role-based access control
+- **Indexing** - Optimized database queries
+
+## 🎨 UI Components
+
+### Messaging Interface
+- **ConversationList** - List of conversations
+- **Chat** - Main chat interface
+- **NewConversationModal** - Create new conversations
+- **MessageInput** - Message composition
+- **TypingIndicator** - Show typing status
+
+### Design System
+- **Responsive Design** - Mobile-first approach
+- **Dark/Light Mode** - Theme support
+- **Accessibility** - WCAG compliant
+- **Modern UI** - Clean, intuitive interface
+
+## 🔒 Security
+
+### Authentication
+- **NextAuth.js** - Secure authentication
+- **Session Management** - JWT-based sessions
+- **Password Hashing** - bcrypt encryption
+- **Email Verification** - Account verification
+
+### Authorization
+- **Role-based Access** - User roles and permissions
+- **Conversation Access** - Verify user participation
+- **Message Permissions** - Edit/delete restrictions
+- **API Protection** - Route protection
+
+### Data Protection
+- **Input Validation** - Zod schema validation
+- **SQL Injection Prevention** - Prisma ORM protection
+- **XSS Protection** - Content sanitization
+- **CORS Configuration** - Cross-origin security
+
+## 📊 Performance
+
+### Optimization
+- **Code Splitting** - Dynamic imports
+- **Image Optimization** - Next.js Image component
+- **Database Indexing** - Optimized queries
+- **Caching** - Redis integration ready
+
+### Monitoring
+- **Error Tracking** - Sentry integration ready
+- **Performance Monitoring** - Vercel Analytics
+- **Database Monitoring** - MongoDB Atlas
+- **Uptime Monitoring** - Health checks
 
 ## 🤝 Contributing
 
-This is a portfolio project demonstrating full-stack development capabilities. For questions or collaboration opportunities, please reach out!
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Setup
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+### Code Style
+- Follow TypeScript best practices
+- Use ESLint and Prettier
+- Write meaningful commit messages
+- Add JSDoc comments for functions
 
 ## 📄 License
 
-This project is for portfolio demonstration purposes.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Next.js Team** - Amazing React framework
+- **Prisma Team** - Excellent database toolkit
+- **Socket.io Team** - Real-time communication library
+- **Vercel Team** - Deployment platform
+- **Tailwind CSS Team** - Utility-first CSS framework
+
+## 📞 Support
+
+- **Documentation**: [QUICK_START.md](./QUICK_START.md)
+- **Deployment**: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/ai-content-platform/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/ai-content-platform/discussions)
+
+## 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/ai-content-platform&type=Date)](https://star-history.com/#yourusername/ai-content-platform&Date)
 
 ---
 
-**Built with ❤️ using Next.js, TypeScript, and modern web technologies**
+**Made with ❤️ by [Your Name]**
+
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yourusername)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/yourusername)
+[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/yourusername)
